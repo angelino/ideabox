@@ -1,4 +1,4 @@
-(ns ideabox.views
+(ns ideabox.view
   (:require [hiccup.page :as page]
             [clojure.pprint :as pp]))
 
@@ -51,21 +51,23 @@
     [:title "IdeaBox Error"]
     (page/include-css "/css/bulma.css")]
    [:body
-    [:h1 "An Error Occured"]
-    [:h3 "Params"]
-    [:table
-     [:tr
-      [:th "Request Verb"]
-      [:td (name (:request-method request))]]
-     [:tr
-      [:th "Request Path"]
-      [:td (:uri request)]]
-     [:tr
-      [:th {:colspan 2} "Parameters"]
-      (for [[k v] (:params request)]
-        [:tr
-         [:td k]
-         [:td v]])]]]))
+    [:section.section
+     [:div.container
+      [:h1.title.is-1 "An Error Occured"]
+      [:h3.title.is-3 "Request Params"]
+      [:table.table.is-bordered.is-fullwidth
+       [:tr
+        [:th "Request Verb"]
+        [:td (name (:request-method request))]]
+       [:tr
+        [:th "Request Path"]
+        [:td (:uri request)]]
+       [:tr
+        [:th {:colspan 2} "Parameters"]
+        (for [[k v] (:params request)]
+          [:tr
+           [:td (str k)]
+           [:td (str v)]])]]]]]))
 
 (defn index-page [ideas]
   (page/html5

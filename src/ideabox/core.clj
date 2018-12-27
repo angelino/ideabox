@@ -5,14 +5,17 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.util.response :refer [redirect
                                         response]]
+            [ideabox.store :as store]
             [ideabox.views :refer [index-page
                                    edit-page
                                    error-page]]))
 
-;; (s/def ::title string?)
-;; (s/def ::description string?)
+;; (s/def ::id uuid?)
+;; (s/def ::title (s/and string? #(<= (count %) 255))
+;; (s/def ::description (s/and string? #(<= (count %) 4000))
 
-;; (s/def ::idea (s/keys :req [::title ::description]))
+;; (s/def ::idea (s/keys :req [::title ::description]
+;;                       :opt [::id]))
 
 ;; Models/Store
 
@@ -20,46 +23,39 @@
   {:title (get params "idea-title")
    :description (get params "idea-description")})
 
-(defonce database (atom {}))
-
-(defn remove-idea! [id]
-  (swap! database dissoc id))
-
-(defn save-idea! [idea]
-  ;; FIXME: Change to use a database or file (edn)
-  (let [id (or (:id idea)
-               (java.util.UUID/randomUUID))
-        entity (assoc idea :id id)]
-    (swap! database assoc id entity)))
-
-(defn find-idea [id]
-  (get @database id))
-
 ;; Handlers
 
 (defn handle-create-idea [req]
-  (if-let [idea (params->idea (get-in req [:params]))]
-    (save-idea! idea))
-  (redirect "/"))
+  (let [db (:ideabox/db req)
+        idea (params->idea (get-in req [:params]))]
+    (store/create-idea! db idea)
+    (redirect "/")))
 
 (defn handle-update-idea [req]
-  (let [id (java.util.UUID/fromString (get-in req [:params :id]))
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))
         idea (params->idea (get-in req [:params]))]
-    (save-idea! (assoc idea :id id))
+    (store/update-idea! db (assoc idea :id id))
     (redirect "/")))
 
 (defn handle-delete-idea [req]
-  (if-let [id (java.util.UUID/fromString (get-in req [:params :id]))]
-    (remove-idea! id))
-  (redirect "/"))
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (store/remove-idea! db id)
+    (redirect "/")))
 
 (defn handle-index-idea [req]
-  (let [ideas (vals @database)]
-    (response (index-page ideas))))
+  (let [db (:ideabox/db req)]
+    (-> (store/read-ideas db)
+        (index-page)
+        (response))))
 
 (defn handle-edit-idea [req]
-  (let [id (java.util.UUID/fromString (get-in req [:params :id]))]
-    (response (edit-page (find-idea id)))))
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (-> (store/find-idea db id)
+        (edit-page)
+        (response))))
 
 ;; Routes
 
@@ -82,10 +78,19 @@
       (handler (assoc req :request-method method))
       (handler req))))
 
+(def db-spec {:connection-uri "jdbc:h2:~/test"
+              :user "sa"
+              :password ""})
+
+(defn wrap-database [handler]
+  (fn [req]
+    (handler (assoc req :ideabox/db db-spec))))
+
 ;; App config
 
 (def app
   (-> app-routes
+      wrap-database
       wrap-sim-methods
       wrap-params
       (wrap-resource "public")))

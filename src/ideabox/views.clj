@@ -26,12 +26,12 @@
       [:input {:type :hidden :name "_method" :value "PUT"}])
     [:input.input
      {:type :text
-      :name "idea-title"
+      :name "idea[title]"
       :placeholder "Title"
       :value (:title idea)}]]
    [:div.field
     [:textarea.textarea
-     {:name "idea-description"
+     {:name "idea[description]"
       :placeholder "Your idea..."}
      (:description idea)]]
    [:div

@@ -2,6 +2,8 @@
   (:require [compojure.core :refer :all]
             [compojure.route :refer [not-found]]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.nested-params :refer [wrap-nested-params]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.util.response :refer [redirect
                                         response]]
@@ -17,24 +19,18 @@
 ;; (s/def ::idea (s/keys :req [::title ::description]
 ;;                       :opt [::id]))
 
-;; Models/Store
-
-(defn params->idea [params]
-  {:title (get params "idea-title")
-   :description (get params "idea-description")})
-
 ;; Handlers
 
 (defn handle-create-idea [req]
   (let [db (:ideabox/db req)
-        idea (params->idea (get-in req [:params]))]
+        idea (get-in req [:params :idea])]
     (store/create-idea! db idea)
     (redirect "/")))
 
 (defn handle-update-idea [req]
   (let [db (:ideabox/db req)
         id (java.util.UUID/fromString (get-in req [:params :id]))
-        idea (params->idea (get-in req [:params]))]
+        idea (get-in req [:params :idea])]
     (store/update-idea! db (assoc idea :id id))
     (redirect "/")))
 
@@ -92,5 +88,7 @@
   (-> app-routes
       wrap-database
       wrap-sim-methods
+      wrap-keyword-params
+      wrap-nested-params
       wrap-params
       (wrap-resource "public")))

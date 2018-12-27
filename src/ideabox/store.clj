@@ -16,9 +16,8 @@
 (defn find-idea [db id]
   (first (jdbc/query db ["SELECT * FROM ideas WHERE id = ?" id])))
 
-(defn create-idea! [db {:keys [id title description] :as idea}]
-  (let [id (or (:id idea)
-               (java.util.UUID/randomUUID))]
+(defn create-idea! [db {:keys [title description] :as idea}]
+  (let [id (java.util.UUID/randomUUID)]
     (jdbc/execute! db
                    ["INSERT INTO ideas (id, title, description)
                        VALUES (?, ?, ?)" id title description])))

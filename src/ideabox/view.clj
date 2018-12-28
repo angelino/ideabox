@@ -98,7 +98,8 @@
             (edit-button (:id idea))]
            [:div.control
             (remove-button (:id idea))]]
-          [:span (:description idea)]])]]]]))
+          (for [line (clojure.string/split (:description idea) #"\n")]
+            [:p line])])]]]]))
 
 (defn edit-page [idea]
   (page/html5

@@ -52,6 +52,20 @@
      {:href "/"}
      "Cancel"]]])
 
+(defn idea-card [idea]
+  [:div.column.is-3
+   [:div.card
+    [:header.card-header
+     [:h4.card-header-title (:title idea)]]
+    [:div.card-content
+     (for [line (clojure.string/split (:description idea) #"\n")]
+       [:p line])]
+    [:footer.card-footer
+     [:div.card-footer-item
+      (edit-button (:id idea))]
+     [:div.card-footer-item
+      (remove-button (:id idea))]]]])
+
 (defn error-page [request]
   (pp/pprint request)
   (page/html5
@@ -90,18 +104,9 @@
     [:section.section
      [:div.container
       [:h3.title.is-3 "Existing Ideas"]
-      [:ul
+      [:div.columns.is-multiline
        (for [idea ideas]
-         [:li.content.is-small
-          [:div.field.is-grouped
-           [:div.control
-            [:h4 (:title idea)]]
-           [:div.control
-            (edit-button (:id idea))]
-           [:div.control
-            (remove-button (:id idea))]]
-          (for [line (clojure.string/split (:description idea) #"\n")]
-            [:p line])])]]]]))
+         (idea-card idea))]]]]))
 
 (defn edit-page [idea]
   (page/html5

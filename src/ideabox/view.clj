@@ -2,6 +2,16 @@
   (:require [hiccup.page :as page]
             [clojure.pprint :as pp]))
 
+(defn page-head []
+  [:head
+   [:title "IdeaBox"]
+   [:meta {:charset "utf-8"}]
+   [:meta {:name "viewport"
+           :content "width=device-width, initial-scale=1"}]
+   (page/include-css "/css/bulma.css")
+   [:script {:defer true
+             :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]])
+
 (defn remove-button [id]
   [:form {:action (str "/" id)
           :method "POST"}
@@ -47,9 +57,7 @@
   (page/html5
    {:lang "en-US"
     :encoding "utf-8"}
-   [:head
-    [:title "IdeaBox Error"]
-    (page/include-css "/css/bulma.css")]
+   (page-head)
    [:body
     [:section.section
      [:div.container
@@ -73,13 +81,7 @@
   (page/html5
    {:lang "en-US"
     :encoding "utf-8"}
-   [:head
-    [:title "IdeaBox"]
-    [:meta {:name "viewport"
-            :content "width=device-width, initial-scale=1"}]
-    (page/include-css "/css/bulma.css")
-    [:script {:defer true
-              :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]]
+   (page-head)
    [:body
     [:section.section
      [:div.container
@@ -105,13 +107,7 @@
   (page/html5
    {:lang "en-US"
     :encoding "utf-8"}
-   [:head
-    [:title "IdeaBox"]
-    [:meta {:name "viewport"
-            :content "width=device-width, initial-scale=1"}]
-    (page/include-css "/css/bulma.css")
-    [:script {:defer true
-              :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]]
+   (page-head)
    [:body
     [:section.section
      [:div.container

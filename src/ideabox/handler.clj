@@ -38,8 +38,8 @@
     (if errors
       (bad-request (new-page (assoc idea :errors errors)))
       (do
-       (store/create-idea! db idea)
-       (redirect "/")))))
+        (store/create-idea! db idea)
+        (redirect "/")))))
 
 (defn handle-update-idea [req]
   (let [db (:ideabox/db req)

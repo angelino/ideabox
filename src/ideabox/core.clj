@@ -23,6 +23,7 @@
   (GET "/:id/edit" [] handle-edit-idea)
   (PUT "/:id" [] handle-update-idea)
   (DELETE "/:id" [] handle-delete-idea)
+  (POST "/:id/like" [] handle-like-idea)
   (not-found handle-not-found))
 
 ;; Wrappers

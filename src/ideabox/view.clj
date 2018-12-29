@@ -38,6 +38,13 @@
    [:span.icon [:i.fas.fa-edit]]
    [:span "Edit"]])
 
+(defn like-button [id]
+  [:form {:action (str "/" id "/like")
+          :method "POST"}
+   [:button.button.is-light.is-small
+    [:span.icon [:i.fas.fa-thumbs-up]]
+    [:span "+"]]])
+
 (defn idea-form [{id :id :as idea}]
   [:form {:action (if id (str "/" id) "/")
           :method "POST"}
@@ -68,8 +75,13 @@
     [:div.level
      [:div.level-left
       [:div.level-item
-       [:h4.card-header-title (:title idea)]]]
+       [:h4.card-header-title
+        (:title idea)]]]
      [:div.level-right
+      [:div.level-item
+       (like-button (:id idea))]
+      [:div.level-item
+       [:span.tag.is-small (:rank idea)]]
       [:div.level-item
        (edit-button (:id idea))]
       [:div.level-item

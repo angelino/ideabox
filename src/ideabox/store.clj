@@ -8,10 +8,13 @@
                    title VARCHAR(255) not null,
                    description VARCHAR(4000) not null,
                    created_at TIMESTAMP not null default NOW(),
-                   updated_at TIMESTAMP not null default NOW())"))
+                   updated_at TIMESTAMP not null default NOW())")
+  (jdbc/execute! db
+                 "ALTER TABLE IF EXISTS ideas
+                    ADD COLUMN IF NOT EXISTS rank SMALLINT default 0"))
 
 (defn read-ideas [db]
-  (jdbc/query db "SELECT * FROM ideas"))
+  (jdbc/query db "SELECT * FROM ideas ORDER BY rank DESC"))
 
 (defn find-idea [db id]
   (first (jdbc/query db ["SELECT * FROM ideas WHERE id = ?" id])))
@@ -29,6 +32,12 @@
                                     updated_at = NOW()
                      WHERE id = ?" title description id]))
 
+(defn like-idea! [db id]
+  (let [{:keys [rank] :as idea} (find-idea db id)]
+    (jdbc/execute! db
+                    ["UPDATE ideas SET rank = ?, updated_at = NOW()
+                        WHERE id = ?" (inc rank) id])))
+
 (defn remove-idea! [db id]
   (jdbc/execute! db ["DELETE FROM ideas WHERE id = ?" id]))
 
@@ -36,6 +45,8 @@
   (def db-spec {:connection-uri "jdbc:h2:~/test"
                 :user "sa"
                 :password ""})
+
+  (create-table db-spec)
 
   (create-idea! db-spec
               {:title "Pizza day!"

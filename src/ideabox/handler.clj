@@ -44,5 +44,11 @@
         (edit-page)
         (response))))
 
+(defn handle-like-idea [req]
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (store/like-idea! db id)
+    (redirect "/")))
+
 (defn handle-not-found [req]
   (error-page req))

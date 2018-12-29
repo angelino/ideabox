@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/ideabox-standalone.jar
+web: java $JVM_OPTS -cp target/ideabox-standalone.jar clojure.main -m ideabox.core $PORT

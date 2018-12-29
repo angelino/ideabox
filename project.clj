@@ -14,5 +14,8 @@
   :plugins [[lein-ring "0.12.4"]
             [lein-environ "1.1.0"]]
   ;; see: https://devcenter.heroku.com/articles/deploying-clojure
-  :profiles {:uberjar {:aot :all}}
+  :profiles {:uberjar {:aot :all}
+             :production {:env {:production true}}}
+  :uberjar-name "ideabox-standalone.jar"
+  :min-lein-version "2.0.0"
   :ring {:handler ideabox.core/app})

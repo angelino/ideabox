@@ -13,4 +13,6 @@
                  [com.h2database/h2 "1.4.197"]]
   :plugins [[lein-ring "0.12.4"]
             [lein-environ "1.1.0"]]
+  ;; see: https://devcenter.heroku.com/articles/deploying-clojure
+  :profiles {:uberjar {:aot :all}}
   :ring {:handler ideabox.core/app})

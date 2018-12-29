@@ -53,18 +53,20 @@
      "Cancel"]]])
 
 (defn idea-card [idea]
-  [:div.column.is-3
-   [:div.card
-    [:header.card-header
-     [:h4.card-header-title (:title idea)]]
-    [:div.card-content
-     (for [line (clojure.string/split (:description idea) #"\n")]
-       [:p line])]
-    [:footer.card-footer
-     [:div.card-footer-item
-      (edit-button (:id idea))]
-     [:div.card-footer-item
-      (remove-button (:id idea))]]]])
+  [:div.card
+   [:header.card-header
+    [:div.level
+     [:div.level-left
+      [:div.level-item
+       [:h4.card-header-title (:title idea)]]]
+     [:div.level-right
+      [:div.level-item
+       (edit-button (:id idea))]
+      [:div.level-item
+       (remove-button (:id idea))]]]]
+   [:div.card-content
+    (for [line (clojure.string/split (:description idea) #"\n")]
+      [:p.content line])]])
 
 (defn error-page [request]
   (pp/pprint request)
@@ -106,7 +108,8 @@
       [:h3.title.is-3 "Existing Ideas"]
       [:div.columns.is-multiline
        (for [idea ideas]
-         (idea-card idea))]]]]))
+         [:div.column.is-12
+          (idea-card idea)])]]]]))
 
 (defn edit-page [idea]
   (page/html5

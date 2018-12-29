@@ -11,7 +11,9 @@
                    updated_at TIMESTAMP not null default NOW())")
   (jdbc/execute! db
                  "ALTER TABLE IF EXISTS ideas
-                    ADD COLUMN IF NOT EXISTS rank SMALLINT default 0"))
+                    ADD COLUMN IF NOT EXISTS rank SMALLINT default 0")
+  (jdbc/execute! db
+                 "CREATE INDEX IF NOT EXISTS ideas_rank ON ideas (rank)"))
 
 (defn read-ideas [db]
   (jdbc/query db "SELECT * FROM ideas ORDER BY rank DESC"))

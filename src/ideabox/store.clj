@@ -1,19 +1,10 @@
 (ns ideabox.store
-  (:require [clojure.java.jdbc :as jdbc]))
+  (:require [clojure.java.jdbc :as jdbc]
+            [clojure.java.io :as io]))
 
-(defn create-table [db]
-  (jdbc/execute! db
-                 "CREATE TABLE IF NOT EXISTS ideas (
-                   id UUID not null primary key,
-                   title VARCHAR(255) not null,
-                   description VARCHAR(4000) not null,
-                   created_at TIMESTAMP not null default NOW(),
-                   updated_at TIMESTAMP not null default NOW())")
-  (jdbc/execute! db
-                 "ALTER TABLE IF EXISTS ideas
-                    ADD COLUMN IF NOT EXISTS rank SMALLINT default 0")
-  (jdbc/execute! db
-                 "CREATE INDEX IF NOT EXISTS ideas_rank ON ideas (rank)"))
+(defn init-database [db]
+  (with-open [r (io/reader (io/resource "db/init.sql"))]
+    (jdbc/execute! db (slurp r))))
 
 (defn read-ideas [db]
   (jdbc/query db "SELECT * FROM ideas ORDER BY rank DESC"))
@@ -48,7 +39,7 @@
                 :user "sa"
                 :password ""})
 
-  (create-table db-spec)
+  (init-database db-spec)
 
   (create-idea! db-spec
               {:title "Pizza day!"

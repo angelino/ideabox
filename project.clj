@@ -7,6 +7,7 @@
                  [ring "1.7.1"]
                  [compojure "1.6.1"]
                  [hiccup "1.0.5"]
+                 [bouncer "1.0.1"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [com.h2database/h2 "1.4.197"]]
   :plugins [[lein-ring "0.12.4"]]

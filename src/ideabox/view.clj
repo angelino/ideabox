@@ -90,6 +90,15 @@
     (for [line (clojure.string/split (:description idea) #"\n")]
       [:p.content line])]])
 
+(defn error-panel [errors]
+  (when errors
+    [:div.message.is-danger
+     [:div.message-header
+      [:p "Fix the mistakes before save"]]
+     [:div.message-body
+      (for [[field message] errors]
+        [:p (apply str message)])]]))
+
 (defn error-page [request]
   (pp/pprint request)
   (page/html5
@@ -146,6 +155,7 @@
     [:section.section
      [:div.container
       [:h1.title.is-1 "A new fresh idea?"]
+      (error-panel (:errors idea))
       (idea-form idea)]]]))
 
 (defn edit-page [idea]
@@ -158,5 +168,6 @@
     [:section.section
      [:div.container
       [:h1.title.is-1 "Edit your idea"]
+      (error-panel (:errors idea))
       (idea-form idea)]]]))
 

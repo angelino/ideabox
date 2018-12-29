@@ -9,13 +9,14 @@
                  [hiccup "1.0.5"]
                  [bouncer "1.0.1"]
                  [environ "1.1.0"]
-                 [org.clojure/java.jdbc "0.7.8"]
-                 [com.h2database/h2 "1.4.197"]]
+                 [org.clojure/java.jdbc "0.7.8"]]
   :plugins [[lein-ring "0.12.4"]
             [lein-environ "1.1.0"]]
-  ;; see: https://devcenter.heroku.com/articles/deploying-clojure
-  :profiles {:uberjar {:aot :all}
-             :production {:env {:production true}}}
+  :profiles {;;:dev {:dependencies [[com.h2database/h2 "1.4.197"]]}
+             ;; see: https://devcenter.heroku.com/articles/deploying-clojure
+             :uberjar {:aot :all}
+             :production {:env {:production true}
+                          :dependencies [[org.postgresql/postgresql "42.2.5"]]}}
   :uberjar-name "ideabox-standalone.jar"
   :min-lein-version "2.0.0"
   :ring {:handler ideabox.core/app})

@@ -18,8 +18,9 @@
 
 (defroutes app-routes
   (GET "/" [] handle-index-idea)
-  (GET "/:id/edit" [] handle-edit-idea)
+  (GET "/new" [] handle-new-idea)
   (POST "/" [] handle-create-idea)
+  (GET "/:id/edit" [] handle-edit-idea)
   (PUT "/:id" [] handle-update-idea)
   (DELETE "/:id" [] handle-delete-idea)
   (not-found handle-not-found))

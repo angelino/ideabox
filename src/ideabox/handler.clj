@@ -4,7 +4,13 @@
             [ideabox.store :as store]
             [ideabox.view :refer [error-page
                                   index-page
-                                  edit-page]]))
+                                  edit-page
+                                  new-page]]))
+
+(defn handle-new-idea [req]
+  (-> {} ;; fresh new idea
+      (new-page)
+      (response)))
 
 (defn handle-create-idea [req]
   (let [db (:ideabox/db req)

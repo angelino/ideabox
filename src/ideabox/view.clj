@@ -12,6 +12,16 @@
    [:script {:defer true
              :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]])
 
+(defn nav-bar []
+  [:nav.navbar
+   [:div.container
+    [:div.navbar-brand
+     [:div.navbar-item
+      [:span.icon.is-medium
+       [:i.fas.fa-3x.fa-lightbulb]]
+      [:div.navbar-item
+       [:h1.title.is-1 "IdeaBox"]]]]]])
+
 (defn remove-button [id]
   [:form {:action (str "/" id)
           :method "POST"}
@@ -99,17 +109,32 @@
     :encoding "utf-8"}
    (page-head)
    [:body
+    (nav-bar)
     [:section.section
      [:div.container
-      [:h1.title.is-1 "IdeaBox"]
-      (idea-form {})]]
-    [:section.section
-     [:div.container
-      [:h3.title.is-3 "Existing Ideas"]
+      [:div.level
+       [:div.level-left
+        [:div.level-item
+         [:h3.title.is-3 "Existing Ideas"]]]
+       [:div.level-right
+        [:div.level-item
+         [:a.button.is-primary {:href "/new"} "Create a new Idea"]]]]
       [:div.columns.is-multiline
        (for [idea ideas]
          [:div.column.is-12
           (idea-card idea)])]]]]))
+
+(defn new-page [idea]
+  (page/html5
+   {:lang "en-US"
+    :encoding "utf-8"}
+   (page-head)
+   [:body
+    (nav-bar)
+    [:section.section
+     [:div.container
+      [:h1.title.is-1 "A new fresh idea?"]
+      (idea-form idea)]]]))
 
 (defn edit-page [idea]
   (page/html5
@@ -117,6 +142,7 @@
     :encoding "utf-8"}
    (page-head)
    [:body
+    (nav-bar)
     [:section.section
      [:div.container
       [:h1.title.is-1 "Edit your idea"]

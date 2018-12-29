@@ -5,6 +5,7 @@
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :refer [wrap-resource]]
+            [environ.core :refer [env]]
             [ideabox.handler :refer :all]))
 
 ;; (s/def ::id uuid?)
@@ -37,13 +38,11 @@
       (handler (assoc req :request-method method))
       (handler req))))
 
-(def db-spec {:connection-uri "jdbc:h2:~/test"
-              :user "sa"
-              :password ""})
-
 (defn wrap-database [handler]
   (fn [req]
-    (handler (assoc req :ideabox/db db-spec))))
+    (handler (assoc req :ideabox/db {:connection-uri (env :database-connection-uri)
+                                     :user (env :database-user)
+                                     :password (env :database-password)}))))
 
 ;; App config
 

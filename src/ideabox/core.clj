@@ -41,7 +41,7 @@
 
 (defn wrap-database [handler]
   (fn [req]
-    (handler (assoc req :ideabox/db {:connection-uri (env :database-connection-uri)
+    (handler (assoc req :ideabox/db {:connection-uri (env :database-url)
                                      :user (env :database-user)
                                      :password (env :database-password)}))))
 

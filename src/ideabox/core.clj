@@ -5,6 +5,7 @@
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :refer [wrap-resource]]
+            [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
             [ideabox.handler :refer :all]))
 
@@ -54,3 +55,7 @@
       wrap-nested-params
       wrap-params
       (wrap-resource "public")))
+
+(defn -main [& [port]]
+  (let [port (Integer. (or port (env :port) 5000))]
+    (jetty/run-jetty app {:port port :join? false})))

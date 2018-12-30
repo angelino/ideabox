@@ -19,4 +19,5 @@
                           :dependencies [[org.postgresql/postgresql "42.2.5"]]}}
   :uberjar-name "ideabox-standalone.jar"
   :min-lein-version "2.0.0"
+  :main ideabox.core
   :ring {:handler ideabox.core/app})

@@ -20,4 +20,5 @@
   :uberjar-name "ideabox-standalone.jar"
   :min-lein-version "2.0.0"
   :main ideabox.core
-  :ring {:handler ideabox.core/app})
+  :ring {:handler ideabox.core/app
+         :init ideabox.core/on-startup})

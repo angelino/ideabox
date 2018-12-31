@@ -7,7 +7,8 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
-            [ideabox.handler :refer :all]))
+            [ideabox.handler :refer :all]
+            [ideabox.store :refer [init-database]]))
 
 ;; (s/def ::id uuid?)
 ;; (s/def ::title (s/and string? #(<= (count %) 255))
@@ -58,6 +59,15 @@
       wrap-nested-params
       wrap-params
       (wrap-resource "public")))
+
+(defn on-startup []
+  (try
+    (println "Initializing the database...")
+    (init-database db)
+    (println "DONE.")
+    (catch Exception e
+      (println "Not possible initialize the database")
+      (println e))))
 
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]

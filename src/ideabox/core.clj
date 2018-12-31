@@ -70,5 +70,6 @@
       (println e))))
 
 (defn -main [& [port]]
+  (on-startup)
   (let [port (Integer. (or port (env :port) 5000))]
     (jetty/run-jetty app {:port port :join? false})))

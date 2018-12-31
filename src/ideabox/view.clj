@@ -20,7 +20,11 @@
       [:span.icon.is-medium
        [:i.fas.fa-3x.fa-lightbulb]]
       [:div.navbar-item
-       [:h1.title.is-1 "IdeaBox"]]]]]])
+       [:h1.title.is-1 "IdeaBox"]]]]
+    [:div.navbar-menu
+     [:div.navbar-start
+      [:a.navbar-item {:href "/"} "Home"]
+      [:a.navbar-item {:href "/archive"} "Archive"]]]]])
 
 (defn remove-button [id]
   [:form {:action (str "/" id)
@@ -28,7 +32,7 @@
    [:input {:type :hidden
             :name "_method"
             :value "DELETE"}]
-   [:button.button.is-light.is-small
+   [:button.button.is-danger.is-small
     [:span.icon [:i.fas.fa-trash]]
     [:span "Delete"]]])
 
@@ -44,6 +48,13 @@
    [:button.button.is-light.is-small
     [:span.icon [:i.fas.fa-thumbs-up]]
     [:span "+"]]])
+
+(defn archive-button [id]
+  [:form {:action (str "/" id "/archive")
+          :method "POST"}
+   [:button.button.is-light.is-small
+    [:span.icon [:i.fas.fa-archive]]
+    [:span "Archive"]]])
 
 (defn idea-form [{id :id :as idea}]
   [:form {:action (if id (str "/" id) "/")
@@ -84,6 +95,24 @@
        [:span.tag.is-small (:rank idea)]]
       [:div.level-item
        (edit-button (:id idea))]
+      [:div.level-item
+       (archive-button (:id idea))]
+      [:div.level-item
+       (remove-button (:id idea))]]]]
+   [:div.card-content
+    (for [line (clojure.string/split (:description idea) #"\n")]
+      [:p.content line])]])
+
+(defn archived-idea-card [idea]
+  [:div.card
+   [:header.card-header
+    [:div.level
+     [:div.level-left
+      [:div.level-item
+       [:h4.card-header-title
+        (:title idea)]]
+      [:div.level-item
+       [:span.tag.is-small (:rank idea)]]
       [:div.level-item
        (remove-button (:id idea))]]]]
    [:div.card-content
@@ -144,6 +173,24 @@
        (for [idea ideas]
          [:div.column.is-12
           (idea-card idea)])]]]]))
+
+(defn index-archive-page [ideas]
+  (page/html5
+   {:lang "en-US"
+    :encoding "utf-8"}
+   (page-head)
+   [:body
+    (nav-bar)
+    [:section.section
+     [:div.container
+      [:div.level
+       [:div.level-left
+        [:div.level-item
+         [:h3.title.is-3 "Archived Ideas"]]]]
+      [:div.columns.is-multiline
+       (for [idea ideas]
+         [:div.column.is-12
+          (archived-idea-card idea)])]]]]))
 
 (defn new-page [idea]
   (page/html5

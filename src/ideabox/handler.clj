@@ -7,7 +7,8 @@
             [ideabox.view :refer [error-page
                                   index-page
                                   edit-page
-                                  new-page]]))
+                                  new-page
+                                  index-archive-page]]))
 
 (defn validate-idea [idea]
   (first
@@ -76,6 +77,18 @@
         id (java.util.UUID/fromString (get-in req [:params :id]))]
     (store/like-idea! db id)
     (redirect "/")))
+
+(defn handle-archive-idea [req]
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (store/archive-idea! db id)
+    (redirect "/")))
+
+(defn handle-index-archive [req]
+  (let [db (:ideabox/db req)]
+    (-> (store/read-archive db)
+        (index-archive-page)
+        (response))))
 
 (defn handle-not-found [req]
   (error-page req))

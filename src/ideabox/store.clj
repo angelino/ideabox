@@ -7,7 +7,10 @@
     (jdbc/execute! db (slurp r))))
 
 (defn read-ideas [db]
-  (jdbc/query db "SELECT * FROM ideas ORDER BY rank DESC"))
+  (jdbc/query db "SELECT * FROM ideas WHERE archived = FALSE ORDER BY rank DESC"))
+
+(defn read-archive [db]
+  (jdbc/query db "SELECT * FROM ideas WHERE archived = TRUE ORDER BY updated_at DESC"))
 
 (defn find-idea [db id]
   (first (jdbc/query db ["SELECT * FROM ideas WHERE id = ?" id])))
@@ -30,6 +33,12 @@
     (jdbc/execute! db
                     ["UPDATE ideas SET rank = ?, updated_at = NOW()
                         WHERE id = ?" (inc rank) id])))
+
+(defn archive-idea! [db id]
+  (if (find-idea db id)
+    (jdbc/execute! db
+                   ["UPDATE ideas SET archived = TRUE, updated_at = NOW()
+                       WHERE id = ?" id])))
 
 (defn remove-idea! [db id]
   (jdbc/execute! db ["DELETE FROM ideas WHERE id = ?" id]))

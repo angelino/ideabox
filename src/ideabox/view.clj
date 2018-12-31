@@ -49,6 +49,16 @@
     [:span.icon [:i.fas.fa-thumbs-up]]
     [:span "+"]]])
 
+(defn unlike-button [id]
+  [:form {:action (str "/" id "/like")
+          :method "POST"}
+   [:input {:type :hidden
+            :name "_method"
+            :value "DELETE"}]
+   [:button.button.is-light.is-small
+    [:span.icon [:i.fas.fa-thumbs-down]]
+    [:span "-"]]])
+
 (defn archive-button [id]
   [:form {:action (str "/" id "/archive")
           :method "POST"}
@@ -91,6 +101,8 @@
      [:div.level-right
       [:div.level-item
        (like-button (:id idea))]
+      [:div.level-item
+       (unlike-button (:id idea))]
       [:div.level-item
        [:span.tag.is-small (:rank idea)]]
       [:div.level-item

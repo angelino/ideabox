@@ -34,6 +34,12 @@
                     ["UPDATE ideas SET rank = ?, updated_at = NOW()
                         WHERE id = ?" (inc rank) id])))
 
+(defn unlike-idea! [db id]
+  (let [{:keys [rank] :as idea} (find-idea db id)]
+    (jdbc/execute! db
+                    ["UPDATE ideas SET rank = ?, updated_at = NOW()
+                        WHERE id = ?" (dec rank) id])))
+
 (defn archive-idea! [db id]
   (if (find-idea db id)
     (jdbc/execute! db

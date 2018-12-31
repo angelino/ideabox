@@ -78,6 +78,12 @@
     (store/like-idea! db id)
     (redirect "/")))
 
+(defn handle-unlike-idea [req]
+  (let [db (:ideabox/db req)
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (store/unlike-idea! db id)
+    (redirect "/")))
+
 (defn handle-archive-idea [req]
   (let [db (:ideabox/db req)
         id (java.util.UUID/fromString (get-in req [:params :id]))]

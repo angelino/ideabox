@@ -8,6 +8,7 @@
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
             [ideabox.handler :refer :all]
+            [ideabox.users.handler :refer :all]
             [ideabox.store :refer [init-database]]))
 
 ;; (s/def ::id uuid?)
@@ -30,6 +31,9 @@
   (POST "/:id/like" [] handle-like-idea)
   (DELETE "/:id/like" [] handle-unlike-idea)
   (GET "/archive" [] handle-index-archive)
+  ;;(GET "/login" [] handle-user-login)
+  ;;(GET "/users/new" [] handle-new-user)
+  (POST "/users" [] handle-create-user)
   (not-found handle-not-found))
 
 ;; Wrappers

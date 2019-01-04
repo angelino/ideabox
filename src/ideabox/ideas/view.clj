@@ -2,8 +2,26 @@
   (:require [hiccup.page :as page]
             [ideabox.shared.view :refer :all]))
 
-(defn remove-button [id]
-  [:form {:action (str "/" id)
+(defn ideas-url [user-id]
+  (str "/users/" user-id "/ideas"))
+
+(defn new-idea-url [user-id]
+  (str (ideas-url user-id) "/new"))
+
+(defn idea-url [{:keys [user-id id] :as idea}]
+  (str (ideas-url user-id) "/" id))
+
+(defn edit-idea-url [idea]
+  (str (idea-url idea)  "/edit"))
+
+(defn like-idea-url [idea]
+  (str (idea-url idea) "/like"))
+
+(defn archive-idea-url [idea]
+  (str (idea-url idea) "/archive"))
+
+(defn remove-button [idea]
+  [:form {:action (idea-url idea)
           :method "POST"}
    [:input {:type :hidden
             :name "_method"
@@ -12,21 +30,21 @@
     [:span.icon [:i.fas.fa-trash]]
     [:span "Delete"]]])
 
-(defn edit-button [id]
+(defn edit-button [idea]
   [:a.button.is-light.is-small
-   {:href (str "/" id "/edit")}
+   {:href (edit-idea-url idea)}
    [:span.icon [:i.fas.fa-edit]]
    [:span "Edit"]])
 
-(defn like-button [id]
-  [:form {:action (str "/" id "/like")
+(defn like-button [idea]
+  [:form {:action (like-idea-url idea)
           :method "POST"}
    [:button.button.is-light.is-small
     [:span.icon [:i.fas.fa-thumbs-up]]
     [:span "+"]]])
 
-(defn unlike-button [id]
-  [:form {:action (str "/" id "/like")
+(defn unlike-button [idea]
+  [:form {:action (like-idea-url idea)
           :method "POST"}
    [:input {:type :hidden
             :name "_method"
@@ -35,15 +53,17 @@
     [:span.icon [:i.fas.fa-thumbs-down]]
     [:span "-"]]])
 
-(defn archive-button [id]
-  [:form {:action (str "/" id "/archive")
+(defn archive-button [idea]
+  [:form {:action (archive-idea-url idea)
           :method "POST"}
    [:button.button.is-light.is-small
     [:span.icon [:i.fas.fa-archive]]
     [:span "Archive"]]])
 
-(defn idea-form [{id :id :as idea}]
-  [:form {:action (if id (str "/" id) "/")
+(defn idea-form [{:keys [user-id id] :as idea}]
+  [:form {:action (if id
+                    (idea-url idea)
+                    (ideas-url user-id))
           :method "POST"}
    [:div.field
     (when id
@@ -63,7 +83,7 @@
      {:type :submit
       :value (if id "Edit" "Create")}]
     [:a.button.is-light.is-medium
-     {:href "/"}
+     {:href (ideas-url user-id)}
      "Cancel"]]])
 
 (defn idea-card [idea]
@@ -76,17 +96,17 @@
         (:title idea)]]]
      [:div.level-right
       [:div.level-item
-       (like-button (:id idea))]
+       (like-button idea)]
       [:div.level-item
-       (unlike-button (:id idea))]
+       (unlike-button idea)]
       [:div.level-item
        [:span.tag.is-small (:rank idea)]]
       [:div.level-item
-       (edit-button (:id idea))]
+       (edit-button idea)]
       [:div.level-item
-       (archive-button (:id idea))]
+       (archive-button idea)]
       [:div.level-item
-       (remove-button (:id idea))]]]]
+       (remove-button idea)]]]]
    [:div.card-content
     (for [line (clojure.string/split (:description idea) #"\n")]
       [:p.content line])]])
@@ -102,18 +122,18 @@
       [:div.level-item
        [:span.tag.is-small (:rank idea)]]
       [:div.level-item
-       (remove-button (:id idea))]]]]
+       (remove-button idea)]]]]
    [:div.card-content
     (for [line (clojure.string/split (:description idea) #"\n")]
       [:p.content line])]])
 
-(defn index-page [ideas]
+(defn index-page [user-id ideas]
   (page/html5
    {:lang "en-US"
     :encoding "utf-8"}
    (page-head)
    [:body
-    (nav-bar)
+    (nav-bar user-id)
     [:section.section
      [:div.container
       [:div.level
@@ -122,19 +142,19 @@
          [:h3.title.is-3 "Existing Ideas"]]]
        [:div.level-right
         [:div.level-item
-         [:a.button.is-primary {:href "/new"} "Create a new Idea"]]]]
+         [:a.button.is-primary {:href (new-idea-url user-id)} "Create a new Idea"]]]]
       [:div.columns.is-multiline
        (for [idea ideas]
          [:div.column.is-12
           (idea-card idea)])]]]]))
 
-(defn index-archive-page [ideas]
+(defn index-archive-page [user-id ideas]
   (page/html5
    {:lang "en-US"
     :encoding "utf-8"}
    (page-head)
    [:body
-    (nav-bar)
+    (nav-bar user-id)
     [:section.section
      [:div.container
       [:div.level
@@ -152,7 +172,7 @@
     :encoding "utf-8"}
    (page-head)
    [:body
-    (nav-bar)
+    (nav-bar (:user-id idea))
     [:section.section
      [:div.container
       [:h1.title.is-1 "A new fresh idea?"]
@@ -165,7 +185,7 @@
     :encoding "utf-8"}
    (page-head)
    [:body
-    (nav-bar)
+    (nav-bar (:user-id idea))
     [:section.section
      [:div.container
       [:h1.title.is-1 "Edit your idea"]

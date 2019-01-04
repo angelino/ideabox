@@ -22,20 +22,22 @@
 ;; Routes
 
 (defroutes app-routes
-  (GET "/" [] handle-index-idea)
-  (GET "/new" [] handle-new-idea)
-  (POST "/" [] handle-create-idea)
-  (GET "/:id/edit" [] handle-edit-idea)
-  (PUT "/:id" [] handle-update-idea)
-  (DELETE "/:id" [] handle-delete-idea)
-  (POST "/:id/archive" [] handle-archive-idea)
-  (POST "/:id/like" [] handle-like-idea)
-  (DELETE "/:id/like" [] handle-unlike-idea)
-  (GET "/archive" [] handle-index-archive)
+  (context "/users/:user-id/ideas" [user-id]
+           (GET "/" [] handle-index-idea)
+           (GET "/new" [] handle-new-idea)
+           (POST "/" [] handle-create-idea)
+           (GET "/:id/edit" [] handle-edit-idea)
+           (PUT "/:id" [] handle-update-idea)
+           (DELETE "/:id" [] handle-delete-idea)
+           (POST "/:id/archive" [] handle-archive-idea)
+           (POST "/:id/like" [] handle-like-idea)
+           (DELETE "/:id/like" [] handle-unlike-idea))
+  (GET "/users/:user-id/archive" [] handle-index-archive)
   ;;(GET "/login" [] handle-user-login)
   (GET "/users/new" [] handle-new-user)
   (POST "/users" [] handle-create-user)
   (not-found handle-not-found))
+
 ;; Wrappers
 
 (def sim-methods {"DELETE" :delete "PUT" :put})

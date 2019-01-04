@@ -22,4 +22,10 @@
                          :email "lucas.angelino@gmail.com"
                          :password "xpto"})
 
-  (jdbc/query db-spec "SELECT * FROM users"))
+  (jdbc/query db-spec "SELECT * FROM ideas")
+
+  (jdbc/execute! db-spec ["UPDATE ideas SET user_id = (SELECT TOP 1 id FROM users)"])
+
+  (jdbc/query db-spec "SELECT TOP 1 id FROM users"))
+
+

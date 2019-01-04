@@ -1,6 +1,11 @@
 (ns ideabox.shared.view
-  (:require [hiccup.page :as page]
-            [clojure.pprint :as pp]))
+  (:require [hiccup.page :as page]))
+
+(defn home-url [user-id]
+  (str "/users/" user-id "/ideas"))
+
+(defn archive-url [user-id]
+  (str "/users/" user-id "/archive"))
 
 (defn page-head []
   [:head
@@ -12,7 +17,7 @@
    [:script {:defer true
              :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]])
 
-(defn nav-bar []
+(defn nav-bar [user-id]
   [:nav.navbar
    [:div.container
     [:div.navbar-brand
@@ -23,8 +28,8 @@
        [:h1.title.is-1 "IdeaBox"]]]]
     [:div.navbar-menu
      [:div.navbar-start
-      [:a.navbar-item {:href "/"} "Home"]
-      [:a.navbar-item {:href "/archive"} "Archive"]]]]])
+      [:a.navbar-item {:href (home-url user-id)} "Home"]
+      [:a.navbar-item {:href (archive-url user-id)} "Archive"]]]]])
 
 (defn error-panel [errors]
   (when errors

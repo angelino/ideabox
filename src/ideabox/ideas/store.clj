@@ -1,20 +1,35 @@
 (ns ideabox.ideas.store
   (:require [clojure.java.jdbc :as jdbc]))
 
-(defn read-ideas [db]
-  (jdbc/query db "SELECT * FROM ideas WHERE archived = FALSE ORDER BY rank DESC"))
+(defn idea-row-mapper [row]
+  {:id (:id row)
+   :user-id (:user_id row)
+   :title (:title row)
+   :description (:description row)
+   :rank (:rank row)
+   :created-at (:created_at row)
+   :updated-at (:updated-at row)})
 
-(defn read-archive [db]
-  (jdbc/query db "SELECT * FROM ideas WHERE archived = TRUE ORDER BY updated_at DESC"))
+(defn read-ideas [db user-id]
+  (jdbc/query db
+              ["SELECT * FROM ideas WHERE user_id = ? AND archived = FALSE ORDER BY rank DESC" user-id]
+              {:row-fn idea-row-mapper}))
+
+(defn read-archive [db user-id]
+  (jdbc/query db
+              ["SELECT * FROM ideas WHERE user_id =? AND archived = TRUE ORDER BY updated_at DESC" user-id]
+              {:row-fn idea-row-mapper}))
 
 (defn find-idea [db id]
-  (first (jdbc/query db ["SELECT * FROM ideas WHERE id = ?" id])))
+  (first (jdbc/query db
+                     ["SELECT * FROM ideas WHERE id = ?" id]
+                     {:row-fn idea-row-mapper})))
 
-(defn create-idea! [db {:keys [title description] :as idea}]
+(defn create-idea! [db {:keys [user-id title description] :as idea}]
   (let [id (java.util.UUID/randomUUID)]
     (jdbc/execute! db
-                   ["INSERT INTO ideas (id, title, description)
-                       VALUES (?, ?, ?)" id title description])))
+                   ["INSERT INTO ideas (id, user_id, title, description)
+                       VALUES (?, ?, ?, ?)" id user-id title description])))
 
 (defn update-idea! [db {:keys [id title description] :as idea}]
   (jdbc/execute! db

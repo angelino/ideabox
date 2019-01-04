@@ -1,14 +1,15 @@
-(ns ideabox.handler
+(ns ideabox.ideas.handler
   (:require [ring.util.response :refer [redirect
                                         response]]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [ideabox.store :as store]
-            [ideabox.view :refer [error-page
-                                  index-page
-                                  edit-page
-                                  new-page
-                                  index-archive-page]]))
+            [ideabox.ideas.store :as store]
+            [ideabox.ideas.view :refer [index-page
+                                        edit-page
+                                        new-page
+                                        index-archive-page]]
+            [ideabox.shared.view :refer :all]
+            [ideabox.shared.handler :refer [bad-request]]))
 
 (defn validate-idea [idea]
   (first
@@ -21,11 +22,6 @@
                        [v/max-count 255 :message "title is longer than 255"]]
                :description [[v/string]
                              [v/max-count 4000 :message "title is longer than 4000"]])))
-
-(defn bad-request [body]
-  {:status 400
-   :headers {}
-   :body body})
 
 (defn handle-new-idea [req]
   (-> {} ;; fresh new idea
@@ -95,6 +91,3 @@
     (-> (store/read-archive db)
         (index-archive-page)
         (response))))
-
-(defn handle-not-found [req]
-  (error-page req))

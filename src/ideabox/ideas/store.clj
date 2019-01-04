@@ -1,10 +1,5 @@
-(ns ideabox.store
-  (:require [clojure.java.jdbc :as jdbc]
-            [clojure.java.io :as io]))
-
-(defn init-database [db]
-  (with-open [r (io/reader (io/resource "db/init.sql"))]
-    (jdbc/execute! db (slurp r))))
+(ns ideabox.ideas.store
+  (:require [clojure.java.jdbc :as jdbc]))
 
 (defn read-ideas [db]
   (jdbc/query db "SELECT * FROM ideas WHERE archived = FALSE ORDER BY rank DESC"))

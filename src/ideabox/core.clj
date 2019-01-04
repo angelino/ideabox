@@ -7,9 +7,10 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
-            [ideabox.handler :refer :all]
-            [ideabox.users.handler :refer :all]
-            [ideabox.store :refer [init-database]]))
+            [ideabox.shared.store :refer [init-database]]
+            [ideabox.shared.handler :refer :all]
+            [ideabox.ideas.handler :refer :all]
+            [ideabox.users.handler :refer :all]))
 
 ;; (s/def ::id uuid?)
 ;; (s/def ::title (s/and string? #(<= (count %) 255))
@@ -32,10 +33,9 @@
   (DELETE "/:id/like" [] handle-unlike-idea)
   (GET "/archive" [] handle-index-archive)
   ;;(GET "/login" [] handle-user-login)
-  ;;(GET "/users/new" [] handle-new-user)
+  (GET "/users/new" [] handle-new-user)
   (POST "/users" [] handle-create-user)
   (not-found handle-not-found))
-
 ;; Wrappers
 
 (def sim-methods {"DELETE" :delete "PUT" :put})

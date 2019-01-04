@@ -26,10 +26,11 @@
        [:i.fas.fa-3x.fa-lightbulb]]
       [:div.navbar-item
        [:h1.title.is-1 "IdeaBox"]]]]
-    [:div.navbar-menu
-     [:div.navbar-start
-      [:a.navbar-item {:href (home-url user-id)} "Home"]
-      [:a.navbar-item {:href (archive-url user-id)} "Archive"]]]]])
+    (when user-id
+      [:div.navbar-menu
+       [:div.navbar-start
+        [:a.navbar-item {:href (home-url user-id)} "Home"]
+        [:a.navbar-item {:href (archive-url user-id)} "Archive"]]])]])
 
 (defn error-panel [errors]
   (when errors

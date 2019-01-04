@@ -11,6 +11,7 @@
 
 (defn handle-create-user [req]
   (let [db (:ideabox/db req)
-        user (get-in req [:params :user])]
+        {email :email :as user} (get-in req [:params :user])]
     (store/create-user! db user)
-    (redirect "/")))
+    (let [user-id (:id (store/find-user-by-email db email))]
+      (redirect (str "/users/" user-id "/ideas")))))

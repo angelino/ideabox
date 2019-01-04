@@ -9,6 +9,10 @@
                    ["INSERT INTO users (id, username, email, password, created_at, updated_at)
                        VALUES(?, ?, ?, ?, NOW(), NOW())" id username, email, password-hash])))
 
+(defn find-user-by-email [db email]
+  (first (jdbc/query db
+                     ["SELECT * FROM users WHERE email = ?" email])))
+
 (comment
 
   (def phash (hashers/derive "mysecret"))

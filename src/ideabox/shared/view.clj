@@ -7,6 +7,9 @@
 (defn archive-url [user-id]
   (str "/users/" user-id "/archive"))
 
+(defn logout-url []
+  "/auth/logout")
+
 (defn page-head []
   [:head
    [:title "IdeaBox"]
@@ -30,7 +33,9 @@
       [:div.navbar-menu
        [:div.navbar-start
         [:a.navbar-item {:href (home-url user-id)} "Home"]
-        [:a.navbar-item {:href (archive-url user-id)} "Archive"]]])]])
+        [:a.navbar-item {:href (archive-url user-id)} "Archive"]]
+       [:div.navbar-end
+        [:a.navbar-item {:href (logout-url)} "Logout"]]])]])
 
 (defn error-panel [errors]
   (when errors

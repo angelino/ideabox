@@ -58,6 +58,7 @@
     (redirect (view/ideas-url user-id))))
 
 (defn handle-index-idea [req]
+  (pp/pprint req)
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))]
     (->> (store/read-ideas db user-id)

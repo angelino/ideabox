@@ -2,8 +2,11 @@
   (:require [hiccup.page :as page]
             [ideabox.shared.view :refer :all]))
 
+(defn registrations-url []
+  "/auth/registrations")
+
 (defn user-registration-form [{id :id :as user}]
-  [:form {:action "/users"
+  [:form {:action (registrations-url)
           :method "POST"}
    [:div.field
     [:input.input
@@ -34,7 +37,7 @@
      {:type :submit
       :value "Create"}]
     [:a.button.is-light.is-medium
-     {:href "/users/new"}
+     {:href "/auth/login"}
      "Cancel"]]])
 
 (defn new-user-page [user]

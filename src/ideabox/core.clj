@@ -5,12 +5,20 @@
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.session :refer [wrap-session]]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
+            [buddy.auth.middleware :refer [wrap-authentication
+                                           wrap-authorization]]
+            [buddy.auth.backends :as backends]
+            [buddy.auth.accessrules :refer [wrap-access-rules
+                                            success
+                                            error]]
             [ideabox.shared.store :refer [init-database]]
             [ideabox.shared.handler :refer :all]
             [ideabox.ideas.handler :refer :all]
-            [ideabox.users.handler :refer :all]))
+            [ideabox.users.handler :refer :all]
+            [ideabox.auth.handler :refer :all]))
 
 ;; (s/def ::id uuid?)
 ;; (s/def ::title (s/and string? #(<= (count %) 255))
@@ -33,9 +41,11 @@
            (POST "/:id/like" [] handle-like-idea)
            (DELETE "/:id/like" [] handle-unlike-idea))
   (GET "/users/:user-id/archive" [] handle-index-archive)
-  ;;(GET "/login" [] handle-user-login)
-  (GET "/users/new" [] handle-new-user)
-  (POST "/users" [] handle-create-user)
+  (GET "/auth/login" [] handle-login)
+  (GET "/auth/logout" [] handle-logout)
+  (GET "/auth/signup" [] handle-new-user)
+  (POST "/auth/sessions" [] handle-create-session)
+  (POST "/auth/registrations" [] handle-create-user)
   (not-found handle-not-found))
 
 ;; Wrappers
@@ -60,10 +70,35 @@
 
 ;; App config
 
+(def backend (backends/session))
+
+(defn any-access [req]
+  (success))
+
+(defn authenticated-access [req]
+  (if (:identity req)
+    (success)
+    (error "Only authenticated users allowed")))
+
+(defn on-error [request value]
+  {:status 403
+   :headers {}
+   :body (str "Not Authorized ;)" " " value)})
+
+(def rules [{:pattern #"^/auth$"
+             :handler any-access}
+            {:pattern #"^/users/.*"
+             :handler authenticated-access
+             :redirect "/auth/login"}])
+             ;;:on-error (fn [req _] (response "Not authorized ;)"))}])
+
 (def app
   (-> app-routes
       wrap-database
       wrap-sim-methods
+      (wrap-access-rules {:rules rules :on-error on-error})
+      (wrap-authorization backend)
+      (wrap-authentication backend)
       wrap-keyword-params
       wrap-nested-params
       wrap-params

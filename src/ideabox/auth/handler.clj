@@ -16,14 +16,19 @@
 (defn handle-create-session [req]
   (let [db (:ideabox/db req)
         email (get-in req [:params :email])
-        password (get-in req [:params :password])]
+        password (get-in req [:params :password])
+        session (:session req)]
     (if-let [user (store/find-user-by-email db email)]
       (if (hashers/check password (:password user))
         (-> (redirect (home-url (:id user)))
-            (assoc :session (assoc (:session req)
-                                   :identity (:email user)))))
+            (assoc :session (assoc session :identity (dissoc user :password))))
+        (render (view/login-page {:email email
+                                  :password password
+                                  :errors [[:password "Invalid password"]]})
+                req))
       (render (view/login-page {:email email
-                                :password password})
+                                :password password
+                                :errors [[:email "User not found"]]})
               req))))
 
 (defn handle-logout [req]

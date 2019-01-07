@@ -8,6 +8,7 @@
             [ring.middleware.session :refer [wrap-session]]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
+            [buddy.auth :refer [authenticated?]]
             [buddy.auth.middleware :refer [wrap-authentication
                                            wrap-authorization]]
             [buddy.auth.backends :as backends]
@@ -76,7 +77,7 @@
   (success))
 
 (defn authenticated-access [req]
-  (if (:identity req)
+  (if (authenticated? req)
     (success)
     (error "Only authenticated users allowed")))
 
@@ -88,9 +89,7 @@
 (def rules [{:pattern #"^/auth$"
              :handler any-access}
             {:pattern #"^/users/.*"
-             :handler authenticated-access
-             :redirect "/auth/login"}])
-             ;;:on-error (fn [req _] (response "Not authorized ;)"))}])
+             :handler authenticated-access}])
 
 (def app
   (-> app-routes
@@ -99,6 +98,7 @@
       (wrap-access-rules {:rules rules :on-error on-error})
       (wrap-authorization backend)
       (wrap-authentication backend)
+      wrap-session
       wrap-keyword-params
       wrap-nested-params
       wrap-params

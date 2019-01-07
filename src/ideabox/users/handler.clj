@@ -14,4 +14,4 @@
         {email :email :as user} (get-in req [:params :user])]
     (store/create-user! db user)
     (let [user-id (:id (store/find-user-by-email db email))]
-      (redirect (str "/users/" user-id "/ideas")))))
+      (redirect "/auth/login"))))

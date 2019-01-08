@@ -4,6 +4,7 @@
             [compojure.response :refer [render]]
             [buddy.hashers :as hashers]
             [buddy.auth :refer [authenticated?]]
+            [ideabox.shared.url :refer :all]
             [ideabox.shared.view :refer :all]
             [ideabox.auth.view :as view]
             [ideabox.users.store :as store]))
@@ -32,7 +33,7 @@
               req))))
 
 (defn handle-logout [req]
-  (-> (redirect (view/login-url))
+  (-> (redirect (login-url))
       (assoc :session {})))
 
 (defn handle-unauthorized [request metadata]

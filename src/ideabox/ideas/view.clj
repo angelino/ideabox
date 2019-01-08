@@ -1,24 +1,7 @@
 (ns ideabox.ideas.view
   (:require [hiccup.page :as page]
+            [ideabox.shared.url :refer :all]
             [ideabox.shared.view :refer :all]))
-
-(defn ideas-url [user-id]
-  (str "/users/" user-id "/ideas"))
-
-(defn new-idea-url [user-id]
-  (str (ideas-url user-id) "/new"))
-
-(defn idea-url [{:keys [user-id id] :as idea}]
-  (str (ideas-url user-id) "/" id))
-
-(defn edit-idea-url [idea]
-  (str (idea-url idea)  "/edit"))
-
-(defn like-idea-url [idea]
-  (str (idea-url idea) "/like"))
-
-(defn archive-idea-url [idea]
-  (str (idea-url idea) "/archive"))
 
 (defn remove-button [idea]
   [:form {:action (idea-url idea)

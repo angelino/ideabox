@@ -1,15 +1,7 @@
 (ns ideabox.auth.view
   (:require [hiccup.page :as page]
+            [ideabox.shared.url :refer :all]
             [ideabox.shared.view :refer :all]))
-
-(defn login-url []
-  "/auth/login")
-
-(defn sessions-url []
-  "/auth/sessions")
-
-(defn signup-url []
-  "/auth/signup")
 
 (defn login-form [{:keys [:email :password] :as credentials}]
   [:form {:action (sessions-url)

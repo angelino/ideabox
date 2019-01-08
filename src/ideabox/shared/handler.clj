@@ -1,11 +1,7 @@
 (ns ideabox.shared.handler
   (:require [clojure.pprint :as pp]
+            [ring.util.response :refer [bad-request]]
             [ideabox.shared.view :refer :all]))
-
-(defn bad-request [body]
-  {:status 400
-   :headers {}
-   :body body})
 
 (defn handle-not-found [req]
   (pp/pprint req)

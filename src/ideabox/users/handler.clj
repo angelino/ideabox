@@ -1,6 +1,7 @@
 (ns ideabox.users.handler
   (:require [ring.util.response :refer [redirect
                                         response]]
+            [ideabox.shared.url :refer :all]
             [ideabox.users.store :as store]
             [ideabox.users.view :as view]))
 
@@ -14,4 +15,4 @@
         {email :email :as user} (get-in req [:params :user])]
     (store/create-user! db user)
     (let [user-id (:id (store/find-user-by-email db email))]
-      (redirect "/auth/login"))))
+      (redirect (login-url)))))

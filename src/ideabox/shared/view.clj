@@ -1,14 +1,6 @@
 (ns ideabox.shared.view
-  (:require [hiccup.page :as page]))
-
-(defn home-url [user-id]
-  (str "/users/" user-id "/ideas"))
-
-(defn archive-url [user-id]
-  (str "/users/" user-id "/archive"))
-
-(defn logout-url []
-  "/auth/logout")
+  (:require [hiccup.page :as page]
+            [ideabox.shared.url :refer :all]))
 
 (defn page-head []
   [:head

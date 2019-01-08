@@ -49,6 +49,7 @@
   (GET "/auth/signup" [] handle-new-user)
   (POST "/auth/sessions" [] handle-create-session)
   (POST "/auth/registrations" [] handle-create-user)
+  (GET "/" [] handle-home)
   (not-found handle-not-found))
 
 ;; Wrappers

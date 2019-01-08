@@ -1,6 +1,8 @@
 (ns ideabox.shared.url)
 
-(defn home-url [user-id]
+(defn home-url [] "/")
+
+(defn home-user-url [user-id]
   (str "/users/" user-id "/ideas"))
 
 (defn archive-url [user-id]

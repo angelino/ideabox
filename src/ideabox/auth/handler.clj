@@ -21,7 +21,7 @@
         session (:session req)]
     (if-let [user (store/find-user-by-email db email)]
       (if (hashers/check password (:password user))
-        (-> (redirect (home-url (:id user)))
+        (-> (redirect (home-user-url (:id user)))
             (assoc :session (assoc session :identity (dissoc user :password))))
         (render (view/login-page {:email email
                                   :password password

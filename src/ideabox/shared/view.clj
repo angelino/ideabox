@@ -21,13 +21,18 @@
        [:i.fas.fa-3x.fa-lightbulb]]
       [:div.navbar-item
        [:h1.title.is-1 "IdeaBox"]]]]
-    (when user-id
+    (if user-id
       [:div.navbar-menu
        [:div.navbar-start
-        [:a.navbar-item {:href (home-url user-id)} "Home"]
+        [:a.navbar-item {:href (home-user-url user-id)} "Home"]
         [:a.navbar-item {:href (archive-url user-id)} "Archive"]]
        [:div.navbar-end
-        [:a.navbar-item {:href (logout-url)} "Logout"]]])]])
+        [:a.navbar-item {:href (logout-url)} "Logout"]]]
+      [:div.navbar-menu
+       [:div.navbar-start
+        [:a.navbar-item {:href (home-url)} "Home"]]
+       [:div.navbar-end
+        [:a.navbar-item {:href (login-url)} "Login"]]])]])
 
 (defn error-panel [errors]
   (when errors
@@ -37,6 +42,19 @@
      [:div.message-body
       (for [[field message] errors]
         [:p (apply str message)])]]))
+
+(defn home-page [user]
+  (page/html5
+   {:lang "en-US"
+    :encoding "utf-8"}
+   (page-head)
+   [:body
+    (nav-bar (:id user))
+    [:section.hero.is-dark.is-fullheight
+     [:div.hero-body
+      [:div.container.has-text-centered
+       [:h1.title "IdeaBox"]
+       [:h2.subtitle "A place to save all your ideas"]]]]]))
 
 (defn error-page [request]
   (page/html5

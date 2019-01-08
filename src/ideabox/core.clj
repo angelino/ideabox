@@ -1,6 +1,7 @@
 (ns ideabox.core
   (:require [compojure.core :refer :all]
             [compojure.route :refer [not-found]]
+            [ring.util.response :refer [redirect]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
@@ -15,6 +16,7 @@
             [buddy.auth.accessrules :refer [wrap-access-rules
                                             success
                                             error]]
+            [ideabox.shared.url :refer [login-url]]
             [ideabox.shared.store :refer [init-database]]
             [ideabox.shared.handler :refer :all]
             [ideabox.ideas.handler :refer :all]
@@ -71,7 +73,22 @@
 
 ;; App config
 
-(def backend (backends/session))
+(defn unauthorized-handler
+  [request metadata]
+  (cond
+    ;; If request is authenticated, raise 403 instead
+    ;; of 401 (because user is authenticated but permission
+    ;; denied is raised).
+    (authenticated? request)
+    {:status 403
+     :headers {}
+     :body "Permission denied"}
+    ;; In other cases, redirect the user to login page.
+    :else
+    (let [current-url (:uri request)]
+      (redirect (login-url)))))
+
+(def backend (backends/session {:unauthorized-handler unauthorized-handler}))
 
 (defn any-access [req]
   (success))
@@ -89,7 +106,8 @@
 (def rules [{:pattern #"^/auth$"
              :handler any-access}
             {:pattern #"^/users/.*"
-             :handler authenticated-access}])
+             :handler authenticated-access
+             :redirect (login-url)}])
 
 (def app
   (-> app-routes

@@ -35,16 +35,3 @@
 (defn handle-logout [req]
   (-> (redirect (login-url))
       (assoc :session {})))
-
-(defn handle-unauthorized [request metadata]
-  (cond
-    ;; If request is authenticated, raise 403 instead
-    ;; of 401 (because user is authenticated but permission
-    ;; denied is raised).
-    (authenticated? request)
-    (-> (render (error-page) request)
-        (assoc :status 403))
-    ;; In other cases, redirect the user to login page.
-    :else
-    (let [current-url (:uri request)]
-      (redirect (format "/auth/login?next=%s" current-url)))))

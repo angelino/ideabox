@@ -98,15 +98,24 @@
     (success)
     (error "Only authenticated users allowed")))
 
+(defn authorized-user [req]
+  (let [current-user-id (get-in req [:identity :id])
+        user-id (java.util.UUID/fromString (get-in req [:match-params :user-id]))]
+    (if-not (= current-user-id user-id)
+      (error)
+      (success))))
+
 (defn on-error [request value]
   {:status 403
    :headers {}
    :body (str "Not Authorized ;)" " " value)})
 
-(def rules [{:pattern #"^/auth$"
+(def rules [{;:pattern #"^/auth$"
+             :uri "/auth/*"
              :handler any-access}
-            {:pattern #"^/users/.*"
-             :handler authenticated-access
+            {;:pattern #"^/users/.*"
+             :uri "/users/:user-id/*"
+             :handler {:and [authenticated-access authorized-user]}
              :redirect (login-url)}])
 
 (def app

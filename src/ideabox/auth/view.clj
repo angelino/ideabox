@@ -7,28 +7,30 @@
   [:form {:action (sessions-url)
           :method "POST"}
    [:div.field
+    [:label.label
+     {:for "email"}
+     "Email"]
     [:input.input
      {:type :email
       :name "email"
-      :placeholder "Your e-mail"
       :value email}]]
    [:div.field
+    [:label.label
+     {:for "password"}
+     "Password"]
     [:input.input
      {:type :password
       :name "password"
-      :placeholder "Your password"
       :value password}]]
-   [:div
-    [:input.button.is-primary.is-medium
+   [:div.field
+    [:input.button.is-primary.is-fullwidth
      {:type :submit
-      :value "Login"}]
-    [:a.button.is-light.is-medium
-     {:href (login-url)}
-     "Cancel"]]
-   [:div
-    [:a.button.is-white.is-medium
+      :value "Login"}]]
+   [:div.has-text-centered
+    [:span.content.is-small "Don't have an account yet?"]
+    [:a.button.is-text.is-small
      {:href (signup-url)}
-     "Signup"]]])
+     "Sign up"]]])
 
 (defn login-page [credentials]
   (page/html5
@@ -39,6 +41,7 @@
     (nav-bar nil)
     [:section.section
      [:div.container
-      [:h1.title.is-1 "Login"]
-      (error-panel (:errors credentials))
-      (login-form credentials)]]]))
+      [:div.columns.is-centered
+       [:div.column.is-one-quarter
+        (error-panel (:errors credentials))
+        (login-form credentials)]]]]]))

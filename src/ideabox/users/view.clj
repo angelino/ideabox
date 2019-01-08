@@ -7,36 +7,46 @@
   [:form {:action (registrations-url)
           :method "POST"}
    [:div.field
+    [:labe.label
+     {:for "user[username]"}
+     "Name"]
     [:input.input
      {:type :text
       :name "user[username]"
-      :placeholder "Your name"
       :value (:username user)}]]
    [:div.field
+    [:labe.label
+     {:for "user[email]"}
+     "Email"]
     [:input.input
      {:type :email
       :name "user[email]"
-      :placeholder "Your best e-mail"
       :value (:email user)}]]
    [:div.field
+    [:labe.label
+     {:for "user[password]"}
+     "Password"]
     [:input.input
      {:type :password
       :name "user[password]"
-      :placeholder "Type a strong password"
       :value (:password user)}]]
    [:div.field
+    [:labe.label
+     {:for "user[password-confirmation]"}
+     "Password Confirmation"]
     [:input.input
      {:type :password
       :name "user[password-confirmation]"
-      :placeholder "Confirm the password"
       :value (:password-confirmation user)}]]
-   [:div
-    [:input.button.is-primary.is-medium
+   [:div.field
+    [:input.button.is-primary.is-fullwidth
      {:type :submit
-      :value "Create"}]
-    [:a.button.is-light.is-medium
+      :value "Sign up"}]]
+   [:div.has-text-centered
+    [:span.content.is-small "Already have an account?"]
+    [:a.button.is-text.is-small
      {:href (login-url)}
-     "Cancel"]]])
+     "Sign in"]]])
 
 (defn new-user-page [user]
   (page/html5
@@ -47,7 +57,8 @@
     (nav-bar nil)
     [:section.section
      [:div.container
-      [:h1.title.is-1 "Create a new user"]
-      (error-panel (:errors user))
-      (user-registration-form user)]]]))
+      [:div.columns.is-centered
+       [:div.column.is-half
+        (error-panel (:errors user))
+        (user-registration-form user)]]]]]))
 

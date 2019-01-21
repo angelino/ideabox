@@ -10,7 +10,9 @@
            :content "width=device-width, initial-scale=1"}]
    (page/include-css "/css/bulma.css")
    [:script {:defer true
-             :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]])
+             :src "https://use.fontawesome.com/releases/v5.3.1/js/all.js"}]
+   [:script {:defer true
+             :src "/js/navbar-burger.js"}]])
 
 (defn nav-bar [user-id]
   [:nav.navbar
@@ -20,15 +22,23 @@
       [:span.icon.is-medium
        [:i.fas.fa-3x.fa-lightbulb]]
       [:div.navbar-item
-       [:h1.title.is-1 "IdeaBox"]]]]
+       [:h1.title.is-1 "IdeaBox"]]]
+     [:a.navbar-burger
+      {:role "button"
+       :aria-label "menu"
+       :aria-expanded "false"
+       :data-target "menu"}
+      [:span {:aria-hidden "true"}]
+      [:span {:aria-hidden "true"}]
+      [:span {:aria-hidden "true"}]]]
     (if user-id
-      [:div.navbar-menu
+      [:div#menu.navbar-menu
        [:div.navbar-start
         [:a.navbar-item {:href (home-user-url user-id)} "Home"]
         [:a.navbar-item {:href (archive-url user-id)} "Archive"]]
        [:div.navbar-end
         [:a.navbar-item {:href (logout-url)} "Logout"]]]
-      [:div.navbar-menu
+      [:div#menu.navbar-menu
        [:div.navbar-start
         [:a.navbar-item {:href (home-url)} "Home"]]
        [:div.navbar-end

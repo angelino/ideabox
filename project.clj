@@ -13,7 +13,7 @@
                  [environ "1.1.0"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.5"]]
-  :plugins [[lein-ring "0.12.4"]
+  :plugins [[lein-ring "0.12.5"]
             [lein-environ "1.1.0"]]
   :profiles {;;:dev {:dependencies [[com.h2database/h2 "1.4.197"]]}
              ;; see: https://devcenter.heroku.com/articles/deploying-clojure

@@ -139,4 +139,5 @@
 (defn -main [& [port]]
   (on-startup)
   (let [port (Integer. (or port (:port config/server)))]
+    (println "Server running on port:" port)
     (jetty/run-jetty app {:port port :join? false})))

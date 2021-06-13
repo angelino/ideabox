@@ -8,7 +8,6 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.adapter.jetty :as jetty]
-            [environ.core :refer [env]]
             [buddy.auth :refer [authenticated?]]
             [buddy.auth.middleware :refer [wrap-authentication
                                            wrap-authorization]]
@@ -16,6 +15,7 @@
             [buddy.auth.accessrules :refer [wrap-access-rules
                                             success
                                             error]]
+            [ideabox.config :as config]
             [ideabox.shared.url :refer [login-url]]
             [ideabox.shared.store :refer [init-database]]
             [ideabox.shared.handler :refer :all]
@@ -63,14 +63,9 @@
       (handler (assoc req :request-method method))
       (handler req))))
 
-(def db (or (env :jdbc-database-url) ;; see: https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-jdbc_database_url
-            {:connection-uri (env :database-connection-uri)
-             :user (env :database-user)
-             :password (env :database-password)}))
-
 (defn wrap-database [handler]
   (fn [req]
-    (handler (assoc req :ideabox/db db))))
+    (handler (assoc req :ideabox/db config/db))))
 
 ;; App config
 
@@ -135,7 +130,7 @@
 (defn on-startup []
   (try
     (println "Initializing the database...")
-    (init-database db)
+    (init-database config/db)
     (println "DONE.")
     (catch Exception e
       (println "Not possible initialize the database")
@@ -143,5 +138,5 @@
 
 (defn -main [& [port]]
   (on-startup)
-  (let [port (Integer. (or port (env :port) 5000))]
+  (let [port (Integer. (or port (:port config/server)))]
     (jetty/run-jetty app {:port port :join? false})))

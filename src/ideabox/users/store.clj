@@ -18,18 +18,18 @@
   (def phash (hashers/derive "mysecret"))
   (hashers/check "mysecret" phash)
 
-  (def db-spec {:connection-uri "jdbc:h2:~/test"
-                :user "sa"
-                :password ""})
+  (create-user! user/db-dev
+                {:username "Lucas"
+                 :email "lucas.angelino@gmail.com"
+                 :password "xpto"})
 
-  (create-user! db-spec {:username "Lucas"
-                         :email "lucas.angelino@gmail.com"
-                         :password "xpto"})
+  (jdbc/query user/db-dev
+              "SELECT * FROM ideas")
 
-  (jdbc/query db-spec "SELECT * FROM ideas")
+  (jdbc/execute! user/db-dev
+                 ["UPDATE ideas SET user_id = (SELECT TOP 1 id FROM users)"])
 
-  (jdbc/execute! db-spec ["UPDATE ideas SET user_id = (SELECT TOP 1 id FROM users)"])
-
-  (jdbc/query db-spec "SELECT TOP 1 id FROM users"))
+  (jdbc/query user/db-dev
+              "SELECT * FROM users"))
 
 

@@ -60,28 +60,23 @@
   (jdbc/execute! db ["DELETE FROM ideas WHERE id = ?" id]))
 
 (comment
-  (def db-spec {:connection-uri "jdbc:h2:~/test"
-                :user "sa"
-                :password ""})
 
-  (init-database db-spec)
+  (create-idea! user/db-dev
+                {:title "Pizza day!"
+                 :description "Pizza day will be the best day ever!!!!"})
 
-  (create-idea! db-spec
-              {:title "Pizza day!"
-               :description "Pizza day will be the best day ever!!!!"})
-
-  (def ideas (read-ideas db-spec))
+  (def ideas (read-ideas user/db-dev))
 
   (def id (:id (first ideas)))
 
-  (def idea (find-idea db-spec id))
+  (def idea (find-idea user/db-dev id))
 
-  (update-idea! db-spec (assoc idea :description "Edited"))
+  (update-idea! user/db-dev (assoc idea :description "Edited"))
 
-  (find-idea db-spec id)
+  (find-idea user/db-dev id)
 
-  (remove-idea! db-spec id)
+  (remove-idea! user/db-dev id)
 
-  (assert (nil? (find-idea db-spec id)))
-  (assert (empty? (read-ideas db-spec))))
+  (assert (nil? (find-idea user/db-dev id)))
+  (assert (empty? (read-ideas user/db-dev))))
 

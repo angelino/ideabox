@@ -5,3 +5,7 @@
 (defn init-database [db]
   (with-open [r (io/reader (io/resource "db/init.sql"))]
     (jdbc/execute! db (slurp r))))
+
+(comment
+
+  (init-database user/db-dev))

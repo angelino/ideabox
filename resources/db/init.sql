@@ -32,3 +32,22 @@ ALTER TABLE IF EXISTS ideas DROP CONSTRAINT IF EXISTS idea_user_fk;
 ALTER TABLE IF EXISTS ideas ADD CONSTRAINT idea_user_fk FOREIGN KEY (user_id) REFERENCES users (id);
 
 CREATE INDEX IF NOT EXISTS users_email ON users (email);
+
+CREATE TABLE IF NOT EXISTS tags (
+       id UUID NOT NULL PRIMARY KEY,
+       description VARCHAR(255) NOT NULL,
+       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS ideas_tags (
+       tag_id UUID NOT NULL,
+       idea_id UUID NOT NULL,
+       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE IF EXISTS ideas_tags DROP CONSTRAINT IF EXISTS idea_tag_fk;
+ALTER TABLE IF EXISTS ideas_tags ADD CONSTRAINT idea_tag_fk FOREIGN KEY (idea_id) REFERENCES ideas (id);
+ALTER TABLE IF EXISTS ideas_tags DROP CONSTRAINT IF EXISTS tag_idea_fk;
+ALTER TABLE IF EXISTS ideas_tags ADD CONSTRAINT tag_idea_fk FOREIGN KEY (tag_id) REFERENCES tags (id);

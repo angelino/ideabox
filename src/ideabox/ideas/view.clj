@@ -61,6 +61,12 @@
      {:name "idea[description]"
       :placeholder "Your idea..."}
      (:description idea)]]
+   [:div.field
+    [:input.input
+     {:type :text
+      :name "idea[tags]"
+      :placeholder "Idea tags..."
+      :value (clojure.string/join ", " (:tags idea))}]]
    [:div
     [:input.button.is-primary.is-medium
      {:type :submit
@@ -92,7 +98,10 @@
        (remove-button idea)]]]]
    [:div.card-content
     (for [line (clojure.string/split (:description idea) #"\n")]
-      [:p.content line])]])
+      [:p.content line])
+    [:div.tags
+     (for [tag (seq (:tags idea))]
+       [:span.tag.is-link tag])]]])
 
 (defn archived-idea-card [idea]
   [:div.card

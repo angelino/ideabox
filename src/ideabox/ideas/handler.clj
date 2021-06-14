@@ -31,10 +31,11 @@
 (defn handle-create-idea [req]
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
-        idea (get-in req [:params :idea])
-        errors (validate-idea idea)]
-    (if errors
-      (bad-request (view/new-page (assoc idea :errors errors)))
+        idea (get-in req [:params :idea])]
+    (if-let [errors (validate-idea idea)]
+      (bad-request (view/new-page (-> idea
+                                      (assoc :errors errors)
+                                      (assoc :user-id user-id))))
       (do
         (store/create-idea! db (assoc idea :user-id user-id))
         (redirect (ideas-url user-id))))))
@@ -43,10 +44,12 @@
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
         id (java.util.UUID/fromString (get-in req [:params :id]))
-        idea (get-in req [:params :idea])
-        errors (validate-idea idea)]
-    (if errors
-      (bad-request (view/edit-page (assoc idea :id id :errors errors)))
+        idea (get-in req [:params :idea])]
+    (if-let [errors (validate-idea idea)]
+      (bad-request (view/edit-page (-> idea
+                                       (assoc :id id)
+                                       (assoc :errors errors)
+                                       (assoc :user-id user-id))))
       (do
         (store/update-idea! db (assoc idea :id id))
         (redirect (ideas-url user-id))))))

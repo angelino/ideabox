@@ -26,6 +26,10 @@
 (defn ideas-url [user-id]
   (str "/users/" user-id "/ideas"))
 
+(defn tagged-ideas-url [user-id tag]
+  (str (ideas-url user-id)
+       (when tag (str "?tag=" tag))))
+
 (defn new-idea-url [user-id]
   (str (ideas-url user-id) "/new"))
 

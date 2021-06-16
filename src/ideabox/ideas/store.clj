@@ -16,12 +16,25 @@
               ["SELECT * FROM tags t INNER JOIN ideas_tags i ON t.id = i.tag_id WHERE i.idea_id = ?" idea-id]
               {:row-fn :description}))
 
+(defn find-tag [db tag]
+  (first (jdbc/query db ["SELECT * FROM tags WHERE description = ?" tag])))
+
 (defn read-ideas [db user-id]
   (doall
    (for [idea (jdbc/query db
                           ["SELECT * FROM ideas WHERE user_id = ? AND archived = FALSE ORDER BY rank DESC" user-id]
                           {:row-fn idea-row-mapper})]
      (assoc idea :tags (read-tags db (:id idea))))))
+
+(defn read-tagged-ideas [db user-id tag]
+  (if-let [tag (find-tag db tag)]
+    (doall
+     (for [idea (jdbc/query db
+                            ["SELECT * FROM ideas INNER JOIN ideas_tags ON ideas.id = ideas_tags.idea_id WHERE user_id = ? AND ideas_tags.tag_id = ? AND archived = FALSE ORDER BY rank DESC"
+                             user-id
+                             (:id tag)]
+                            {:row-fn idea-row-mapper})]
+       (assoc idea :tags (read-tags db (:id idea)))))))
 
 (defn read-archive [db user-id]
   (jdbc/query db
@@ -33,9 +46,6 @@
                                    ["SELECT * FROM ideas WHERE id = ?" id]
                                    {:row-fn idea-row-mapper}))]
     (assoc idea :tags (read-tags db id))))
-
-(defn find-tag [db tag]
-  (first (jdbc/query db ["SELECT * FROM tags WHERE description = ?" tag])))
 
 (defn create-tag-when-not-exists! [db idea-id description]
   (if-let [tag (find-tag db description)]

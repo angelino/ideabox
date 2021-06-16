@@ -101,7 +101,9 @@
       [:p.content line])
     [:div.tags
      (for [tag (seq (:tags idea))]
-       [:span.tag.is-link tag])]]])
+       [:a.tag.is-link
+        {:href (tagged-ideas-url (:user-id idea) tag)}
+        [:span tag]])]]])
 
 (defn archived-idea-card [idea]
   [:div.card

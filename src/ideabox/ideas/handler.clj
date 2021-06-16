@@ -63,8 +63,11 @@
 
 (defn handle-index-idea [req]
   (let [db (:ideabox/db req)
-        user-id (java.util.UUID/fromString (get-in req [:params :user-id]))]
-    (->> (store/read-ideas db user-id)
+        user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
+        tag (get-in req [:params :tag])]
+    (->> (if tag
+           (store/read-tagged-ideas db user-id tag)
+           (store/read-ideas db user-id))
          (view/index-page user-id)
          (response))))
 

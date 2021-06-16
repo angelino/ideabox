@@ -20,6 +20,7 @@
             [ideabox.shared.store :refer [init-database]]
             [ideabox.shared.handler :refer :all]
             [ideabox.ideas.handler :refer :all]
+            [ideabox.tags.handler :refer :all]
             [ideabox.users.handler :refer :all]
             [ideabox.auth.handler :refer :all]))
 
@@ -43,6 +44,7 @@
            (POST "/:id/archive" [] handle-archive-idea)
            (POST "/:id/like" [] handle-like-idea)
            (DELETE "/:id/like" [] handle-unlike-idea))
+  (GET "/users/:user-id/tags" [] handle-index-tag)
   (GET "/users/:user-id/archive" [] handle-index-archive)
   (GET "/auth/login" [] handle-login)
   (GET "/auth/logout" [] handle-logout)

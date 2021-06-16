@@ -35,7 +35,9 @@
       [:div#menu.navbar-menu
        [:div.navbar-start
         [:a.navbar-item {:href (home-user-url user-id)} "Home"]
+        [:a.navbar-item {:href (tags-url user-id)} "Tags"]
         [:a.navbar-item {:href (archive-url user-id)} "Archive"]]
+
        [:div.navbar-end
         [:a.navbar-item {:href (logout-url)} "Logout"]]]
       [:div#menu.navbar-menu

@@ -65,7 +65,7 @@
     [:input.input
      {:type :text
       :name "idea[tags]"
-      :placeholder "Idea tags..."
+      :placeholder "Tags separated by comma"
       :value (clojure.string/join ", " (:tags idea))}]]
    [:div
     [:input.button.is-primary.is-medium
@@ -175,7 +175,7 @@
     (nav-bar (:user-id idea))
     [:section.section
      [:div.container
-      [:h1.title.is-1 "A new fresh idea?"]
+      [:h1.title.is-1 "A fresh new idea?"]
       (error-panel (:errors idea))
       (idea-form idea)]]]))
 

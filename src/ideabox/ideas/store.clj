@@ -37,9 +37,11 @@
        (assoc idea :tags (read-tags db (:id idea)))))))
 
 (defn read-archive [db user-id]
-  (jdbc/query db
-              ["SELECT * FROM ideas WHERE user_id =? AND archived = TRUE ORDER BY updated_at DESC" user-id]
-              {:row-fn idea-row-mapper}))
+  (doall
+   (for [archived-idea (jdbc/query db
+                                   ["SELECT * FROM ideas WHERE user_id =? AND archived = TRUE ORDER BY updated_at DESC" user-id]
+                                   {:row-fn idea-row-mapper})]
+     (assoc archived-idea :tags (read-tags db (:id archived-idea))))))
 
 (defn find-idea [db id]
   (if-let [idea (first (jdbc/query db

@@ -75,6 +75,13 @@
      {:href (ideas-url user-id)}
      "Cancel"]]])
 
+(defn tags [idea]
+  [:div.tags
+   (for [tag (seq (:tags idea))]
+     [:a.tag.is-link
+      {:href (tagged-ideas-url (:user-id idea) tag)}
+      [:span tag]])])
+
 (defn idea-card [idea]
   [:div.card
    [:header.card-header
@@ -99,11 +106,7 @@
    [:div.card-content
     (for [line (clojure.string/split (:description idea) #"\n")]
       [:p.content line])
-    [:div.tags
-     (for [tag (seq (:tags idea))]
-       [:a.tag.is-link
-        {:href (tagged-ideas-url (:user-id idea) tag)}
-        [:span tag]])]]])
+    (tags idea)]])
 
 (defn archived-idea-card [idea]
   [:div.card
@@ -119,7 +122,10 @@
        (remove-button idea)]]]]
    [:div.card-content
     (for [line (clojure.string/split (:description idea) #"\n")]
-      [:p.content line])]])
+      [:p.content line])
+    [:div.tags
+     (for [tag (seq (:tags idea))]
+       [:span.tag tag])]]])
 
 (defn index-page [user-id ideas]
   (page/html5

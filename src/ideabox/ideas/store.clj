@@ -29,9 +29,9 @@
               {:row-fn idea-row-mapper}))
 
 (defn find-idea [db id]
-  (let [idea (first (jdbc/query db
-                                ["SELECT * FROM ideas WHERE id = ?" id]
-                                {:row-fn idea-row-mapper}))]
+  (if-let [idea (first (jdbc/query db
+                                   ["SELECT * FROM ideas WHERE id = ?" id]
+                                   {:row-fn idea-row-mapper}))]
     (assoc idea :tags (read-tags db id))))
 
 (defn find-tag [db tag]
@@ -113,7 +113,7 @@
                 {:user-id user-id
                  :title "Pizza day!"
                  :description "Pizza day will be the best day ever!!!!"
-                 :tags ["testando tags" "outra tag"]})
+                 :tags "testando tags, outra tag"})
 
   (def ideas (read-ideas user/db-dev user-id))
 
@@ -121,12 +121,14 @@
 
   (def idea (find-idea user/db-dev id))
 
-  (update-idea! user/db-dev (assoc idea :description "Edited"))
+  (update-idea! user/db-dev (-> idea
+                                (assoc :description "Edited")
+                                (update :tags #(clojure.string/join ", " %))))
 
   (find-idea user/db-dev id)
 
   (remove-idea! user/db-dev id)
 
   (assert (nil? (find-idea user/db-dev id)))
-  (assert (empty? (read-ideas user/db-dev))))
+  (assert (empty? (read-ideas user/db-dev user-id))))
 

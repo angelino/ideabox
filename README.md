@@ -27,6 +27,12 @@ or
   java -jar ./target/ideabox-standalone.jar
 ```
 
+## Generate the docs
+
+```shell script
+  lein codox
+```
+
 ## License
 
 Copyright © 2021 Lucas Angelino dos Santos

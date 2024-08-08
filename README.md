@@ -4,7 +4,8 @@ A Clojure app designed to save my ideas and learn Clojure.
 
 ## Dependencies
 
-- [H2 database](https://h2database.com/html/main.html)
+- [H2 database](https://h2database.com/html/main.html) for localhost dev
+- [Postgres](https://h2database.com/html/main.html)
 - [Bulma CSS](https://bulma.io)
 
 ## Usage
@@ -33,6 +34,17 @@ or
   lein codox
 ```
 
+## Run on Docker
+
+```shell script
+  docker compose up -d
+```
+and see the logs
+
+```shell script
+  docker compose logs
+```
+
 ## License
 
-Copyright © 2021 Lucas Angelino dos Santos
+Copyright © 2024 Lucas Angelino dos Santos

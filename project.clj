@@ -12,10 +12,11 @@
                  [bouncer "1.0.1"]
                  [environ "1.2.0"]
                  [org.clojure/java.jdbc "0.7.12"]
+                 [com.h2database/h2 "2.3.230"]
                  [org.postgresql/postgresql "42.2.21"]]
   :plugins [[lein-ring "0.12.5"]
             [lein-environ "1.1.0"]
-            [lein-codox "0.10.7"]]
+            [lein-codox "0.10.8"]]
   :codox {:source-paths ["src"]}
   :profiles {;; see: https://devcenter.heroku.com/articles/deploying-clojure
              :uberjar {:aot :all}

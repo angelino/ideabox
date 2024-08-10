@@ -7,7 +7,7 @@
                  [com.taoensso/telemere "1.0.0-beta16"]
                  [com.taoensso/slf4j-telemere "1.0.0-beta16"]
                  [ring "1.12.2"]
-                 [compojure "1.7.0"] ; 1.7.1 with ring 1.12.2 it is broken
+                 [compojure "1.7.1"]
                  [hiccup "1.0.5"]
                  [buddy/buddy-auth "3.0.323"]
                  [buddy/buddy-hashers "2.0.167"]
@@ -16,7 +16,7 @@
                  [org.clojure/java.jdbc "0.7.12"]
                  #_[com.h2database/h2 "2.3.230"]
                  [org.postgresql/postgresql "42.7.3"]]
-  :plugins [[lein-ring "0.12.5"]
+  :plugins [[lein-ring "0.12.6"]
             [lein-environ "1.1.0"]
             [lein-codox "0.10.8"]]
   :codox {:source-paths ["src"]}

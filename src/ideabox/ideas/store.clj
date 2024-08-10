@@ -107,9 +107,15 @@
                         WHERE id = ?" (dec rank) id])))
 
 (defn archive-idea! [db id]
-  (if (find-idea db id)
+  (when (find-idea db id)
     (jdbc/execute! db
                    ["UPDATE ideas SET archived = TRUE, updated_at = NOW()
+                       WHERE id = ?" id])))
+
+(defn unarchive-idea! [db id]
+  (when (find-idea db id)
+    (jdbc/execute! db
+                   ["UPDATE ideas SET archived = FALSE, updated_at = NOW()
                        WHERE id = ?" id])))
 
 (defn remove-idea! [db id]

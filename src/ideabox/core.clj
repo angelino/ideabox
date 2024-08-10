@@ -42,6 +42,7 @@
            (PUT "/:id" [] handle-update-idea)
            (DELETE "/:id" [] handle-delete-idea)
            (POST "/:id/archive" [] handle-archive-idea)
+           (POST "/:id/unarchive" [] handle-unarchive-idea)
            (POST "/:id/like" [] handle-like-idea)
            (DELETE "/:id/like" [] handle-unlike-idea))
   (GET "/users/:user-id/tags" [] handle-index-tag)

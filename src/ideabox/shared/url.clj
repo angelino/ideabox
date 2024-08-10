@@ -45,5 +45,8 @@
 (defn archive-idea-url [idea]
   (str (idea-url idea) "/archive"))
 
+(defn unarchive-idea-url [idea]
+  (str (idea-url idea) "/unarchive"))
+
 (defn tags-url [user-id]
   (str "/users/" user-id "/tags"))

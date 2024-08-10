@@ -1,14 +1,11 @@
 (ns ideabox.ideas.handler
-  (:require [clojure.pprint :as pp]
-            [ring.util.response :refer [redirect
-                                        response
-                                        bad-request]]
-            [bouncer.core :as b]
-            [bouncer.validators :as v]
-            [ideabox.shared.url :refer :all]
-            [ideabox.ideas.store :as store]
-            [ideabox.ideas.view :as view]
-            [ideabox.shared.view :refer :all]))
+  (:require
+   [bouncer.core :as b]
+   [bouncer.validators :as v]
+   [ideabox.ideas.store :as store]
+   [ideabox.ideas.view :as view]
+   [ideabox.shared.url :as urls]
+   [ring.util.response :refer [bad-request redirect response]]))
 
 (defn validate-idea [idea]
   (first
@@ -38,7 +35,7 @@
                                       (assoc :user-id user-id))))
       (do
         (store/create-idea! db (assoc idea :user-id user-id))
-        (redirect (ideas-url user-id))))))
+        (redirect (urls/ideas-url user-id))))))
 
 (defn handle-update-idea [req]
   (let [db (:ideabox/db req)
@@ -52,14 +49,14 @@
                                        (assoc :user-id user-id))))
       (do
         (store/update-idea! db (assoc idea :id id))
-        (redirect (ideas-url user-id))))))
+        (redirect (urls/ideas-url user-id))))))
 
 (defn handle-delete-idea [req]
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
         id (java.util.UUID/fromString (get-in req [:params :id]))]
     (store/remove-idea! db id)
-    (redirect (ideas-url user-id))))
+    (redirect (urls/ideas-url user-id))))
 
 (defn handle-index-idea [req]
   (let [db (:ideabox/db req)
@@ -83,21 +80,28 @@
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
         id (java.util.UUID/fromString (get-in req [:params :id]))]
     (store/like-idea! db id)
-    (redirect (ideas-url user-id))))
+    (redirect (urls/ideas-url user-id))))
 
 (defn handle-unlike-idea [req]
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
         id (java.util.UUID/fromString (get-in req [:params :id]))]
     (store/unlike-idea! db id)
-    (redirect (ideas-url user-id))))
+    (redirect (urls/ideas-url user-id))))
 
 (defn handle-archive-idea [req]
   (let [db (:ideabox/db req)
         user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
         id (java.util.UUID/fromString (get-in req [:params :id]))]
     (store/archive-idea! db id)
-    (redirect (ideas-url user-id))))
+    (redirect (urls/ideas-url user-id))))
+
+(defn handle-unarchive-idea [req]
+  (let [db (:ideabox/db req)
+        user-id (java.util.UUID/fromString (get-in req [:params :user-id]))
+        id (java.util.UUID/fromString (get-in req [:params :id]))]
+    (store/unarchive-idea! db id)
+    (redirect (urls/archive-url user-id))))
 
 (defn handle-index-archive [req]
   (let [db (:ideabox/db req)

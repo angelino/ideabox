@@ -14,7 +14,7 @@
                  [bouncer "1.0.1"]
                  [environ "1.2.0"]
                  [org.clojure/java.jdbc "0.7.12"]
-                 #_[com.h2database/h2 "2.3.230"]
+                 [com.h2database/h2 "2.3.232"]
                  [org.postgresql/postgresql "42.7.3"]]
   :plugins [[lein-ring "0.12.6"]
             [lein-environ "1.1.0"]

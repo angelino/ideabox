@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ideabox
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ideabox-config
+  namespace: ideabox
+data:
+  # property-like keys; each key maps to a simple value
+  DATABASE_CONNECTION_URI: "jdbc:h2:~/test"
+  #DATABASE_CONNECTION_URI: "jdbc:postgresql://db/"
+  #?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+  DATABASE_USER: "ideabox"
+  DATABASE_PASSWORD: "ideabox"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ideabox-deployment
+  namespace: ideabox
+  labels:
+    app: ideabox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ideabox
+  template:
+    metadata:
+      labels:
+        app: ideabox
+    spec:
+      containers:
+        - name: ideabox
+          image: ideabox:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATABASE_CONNECTION_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: ideabox-config
+                  key: DATABASE_CONNECTION_URI
+            - name: DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: ideabox-config
+                  key: DATABASE_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: ideabox-config
+                  key: DATABASE_PASSWORD
+          ports:
+            - containerPort: 3000

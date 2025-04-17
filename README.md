@@ -45,6 +45,17 @@ and see the logs
   docker compose logs
 ```
 
+## Run on Kubernets
+
+```shell script
+  kubectl apply -f deployment.yaml
+```
+and see the logs
+
+```shell script
+  kubectl logs -n ideabox -f deployments/ideabox-deployment
+```
+
 ## License
 
-Copyright © 2024 Lucas Angelino dos Santos
+Copyright © 2025 Lucas Angelino dos Santos

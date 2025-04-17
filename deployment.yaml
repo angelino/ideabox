@@ -47,6 +47,8 @@ spec:
     spec:
       containers:
         - name: ideabox
+          # Building images to in-cluster container runtime (minikube)
+          # $ minikube image build -t ideabox .
           image: ideabox:latest
           imagePullPolicy: IfNotPresent
           volumeMounts:

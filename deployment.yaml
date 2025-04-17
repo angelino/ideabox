@@ -75,3 +75,18 @@ spec:
         - name: ideabox-data
           persistentVolumeClaim:
             claimName: ideabox-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ideabox-service
+  namespace: ideabox
+spec:
+  type: NodePort
+  selector:
+    app: ideabox
+  ports:
+    - protocol: TCP
+      port: 3000 # Port on which the service will be exposed inside the cluster
+      targetPort: 3000 # Port on which the pod/container is running
+      nodePort: 31001 # Port on which the service will be accessed externally

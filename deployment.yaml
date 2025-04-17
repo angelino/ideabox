@@ -10,11 +10,23 @@ metadata:
   namespace: ideabox
 data:
   # property-like keys; each key maps to a simple value
-  DATABASE_CONNECTION_URI: "jdbc:h2:~/test"
+  DATABASE_CONNECTION_URI: "jdbc:h2:/usr/local/ideabox/data/ideabox-db"
   #DATABASE_CONNECTION_URI: "jdbc:postgresql://db/"
   #?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
   DATABASE_USER: "ideabox"
   DATABASE_PASSWORD: "ideabox"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ideabox-data-pvc
+  namespace: ideabox
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,6 +49,9 @@ spec:
         - name: ideabox
           image: ideabox:latest
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: ideabox-data
+              mountPath: /usr/local/ideabox/data
           env:
             - name: DATABASE_CONNECTION_URI
               valueFrom:
@@ -55,3 +70,8 @@ spec:
                   key: DATABASE_PASSWORD
           ports:
             - containerPort: 3000
+
+      volumes:
+        - name: ideabox-data
+          persistentVolumeClaim:
+            claimName: ideabox-data-pvc

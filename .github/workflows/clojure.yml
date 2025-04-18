@@ -13,6 +13,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install Leiningen
+      run: |
+        wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+        chmod +x lein
+        sudo mv lein /usr/local/bin/
     - name: Install dependencies
       run: lein deps
     - name: Run tests

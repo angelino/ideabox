@@ -39,6 +39,7 @@ or
 ```shell script
   docker compose up -d
 ```
+
 and see the logs
 
 ```shell script
@@ -47,9 +48,18 @@ and see the logs
 
 ## Run on Kubernets
 
+Build the image to in-cluster container runtime (optional) or push to a repository (https://minikube.sigs.k8s.io/docs/handbook/pushing/)
+
+```shell script
+  minikube image build -t ideabox .
+```
+
+apply the deployment
+
 ```shell script
   kubectl apply -f deployment.yaml
 ```
+
 and see the logs
 
 ```shell script

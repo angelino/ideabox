@@ -11,5 +11,6 @@ pom.xml.asc
 .hg/
 profiles.clj
 .idea/
+*.iml
 .lsp
 .clj-kondo

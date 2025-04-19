@@ -20,7 +20,8 @@
             [lein-environ "1.1.0"]
             [lein-codox "0.10.8"]]
   :codox {:source-paths ["src"]}
-  :profiles {;; see: https://devcenter.heroku.com/articles/deploying-clojure
+  :profiles {:dev {:source-paths ["dev" "src"]}
+             ;; see: https://devcenter.heroku.com/articles/deploying-clojure
              :uberjar {:aot :all}
              :production {:env {:production true}}}
   :uberjar-name "ideabox-standalone.jar"

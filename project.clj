@@ -13,6 +13,8 @@
                  [buddy/buddy-hashers "2.0.167"]
                  [bouncer "1.0.1"]
                  [environ "1.2.0"]
+                 [clj-commons/iapetos "0.1.14"]
+                 [io.prometheus/simpleclient_hotspot "0.12.0"]
                  [org.clojure/java.jdbc "0.7.12"]
                  [com.h2database/h2 "2.3.232"]
                  [org.postgresql/postgresql "42.7.3"]]

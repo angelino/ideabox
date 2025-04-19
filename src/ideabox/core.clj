@@ -1,28 +1,38 @@
 (ns ideabox.core
-  (:require [compojure.core :refer :all]
-            [compojure.route :refer [not-found]]
-            [ring.util.response :refer [redirect]]
-            [ring.middleware.params :refer [wrap-params]]
-            [ring.middleware.nested-params :refer [wrap-nested-params]]
-            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.resource :refer [wrap-resource]]
-            [ring.middleware.session :refer [wrap-session]]
-            [ring.adapter.jetty :as jetty]
-            [buddy.auth :refer [authenticated?]]
+  (:require [buddy.auth :refer [authenticated?]]
+            [buddy.auth.accessrules :refer [error
+                                            success
+                                            wrap-access-rules]]
+            [buddy.auth.backends :as backends]
             [buddy.auth.middleware :refer [wrap-authentication
                                            wrap-authorization]]
-            [buddy.auth.backends :as backends]
-            [buddy.auth.accessrules :refer [wrap-access-rules
-                                            success
-                                            error]]
+            [compojure.core :refer :all]
+            [compojure.route :refer [not-found]]
+            [iapetos.collector.jvm :as jvm]
+            [iapetos.collector.ring :as ring]
+            [iapetos.core :as prometheus]
+            [ideabox.auth.handler :refer :all]
             [ideabox.config :as config]
-            [ideabox.shared.url :refer [login-url]]
-            [ideabox.shared.store :refer [init-database]]
-            [ideabox.shared.handler :refer :all]
             [ideabox.ideas.handler :refer :all]
+            [ideabox.shared.handler :refer :all]
+            [ideabox.shared.store :refer [init-database]]
+            [ideabox.shared.url :refer [login-url]]
             [ideabox.tags.handler :refer :all]
             [ideabox.users.handler :refer :all]
-            [ideabox.auth.handler :refer :all]))
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.nested-params :refer [wrap-nested-params]]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.session :refer [wrap-session]]
+            [ring.util.response :refer [redirect]]))
+
+;; Prometheus setup
+;;
+(defonce prometheus-registry
+  (-> (prometheus/collector-registry)
+      (jvm/initialize)
+      (ring/initialize)))
 
 ;; (s/def ::id uuid?)
 ;; (s/def ::title (s/and string? #(<= (count %) 255))
@@ -35,16 +45,16 @@
 
 (defroutes app-routes
   (context "/users/:user-id/ideas" [user-id]
-           (GET "/" [] handle-index-idea)
-           (GET "/new" [] handle-new-idea)
-           (POST "/" [] handle-create-idea)
-           (GET "/:id/edit" [] handle-edit-idea)
-           (PUT "/:id" [] handle-update-idea)
-           (DELETE "/:id" [] handle-delete-idea)
-           (POST "/:id/archive" [] handle-archive-idea)
-           (POST "/:id/unarchive" [] handle-unarchive-idea)
-           (POST "/:id/like" [] handle-like-idea)
-           (DELETE "/:id/like" [] handle-unlike-idea))
+    (GET "/" [] handle-index-idea)
+    (GET "/new" [] handle-new-idea)
+    (POST "/" [] handle-create-idea)
+    (GET "/:id/edit" [] handle-edit-idea)
+    (PUT "/:id" [] handle-update-idea)
+    (DELETE "/:id" [] handle-delete-idea)
+    (POST "/:id/archive" [] handle-archive-idea)
+    (POST "/:id/unarchive" [] handle-unarchive-idea)
+    (POST "/:id/like" [] handle-like-idea)
+    (DELETE "/:id/like" [] handle-unlike-idea))
   (GET "/users/:user-id/tags" [] handle-index-tag)
   (GET "/users/:user-id/archive" [] handle-index-archive)
   (GET "/auth/login" [] handle-login)
@@ -110,11 +120,14 @@
    :body (str "Not Authorized ;)" " " value)})
 
 (def rules [{;:pattern #"^/auth$"
-             :uri "/auth/*"
+             :uri     "/auth/*"
+             :handler any-access}
+            {;:pattern #"^/metrics"
+             :uri     "/metrics"
              :handler any-access}
             {;:pattern #"^/users/.*"
-             :uri "/users/:user-id/*"
-             :handler {:and [authenticated-access authorized-user]}
+             :uri      "/users/:user-id/*"
+             :handler  {:and [authenticated-access authorized-user]}
              :redirect (login-url)}])
 
 (def app
@@ -128,7 +141,9 @@
       wrap-keyword-params
       wrap-nested-params
       wrap-params
-      (wrap-resource "public")))
+      (wrap-resource "public")
+      ;; it exposes the metrics to Prometheus scraping process.
+      (ring/wrap-metrics prometheus-registry {:path "/metrics"})))
 
 (defn on-startup []
   (try

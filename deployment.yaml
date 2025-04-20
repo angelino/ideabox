@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ideabox-config
-  namespace: ideabox
+  #namespace: ideabox
 data:
   # property-like keys; each key maps to a simple value
   DATABASE_CONNECTION_URI: "jdbc:h2:/usr/local/ideabox/data/ideabox-db"
@@ -20,7 +20,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: ideabox-data-pvc
-  namespace: ideabox
+  #namespace: ideabox
 spec:
   accessModes:
     - ReadWriteOnce
@@ -32,7 +32,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ideabox-deployment
-  namespace: ideabox
+  #namespace: ideabox
   labels:
     app: ideabox
 spec:
@@ -82,9 +82,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ideabox-service
-  namespace: ideabox
+  #namespace: ideabox
   labels:
-    app: ideabox-app
+    app: ideabox
 spec:
   type: NodePort
   selector:
@@ -100,12 +100,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: ideabox-app
-  namespace: ideabox
+  #namespace: ideabox
   labels:
     team: frontend
 spec:
   selector:
     matchLabels:
-      app: ideabox-app
+      app: ideabox
   endpoints:
     - port: web
